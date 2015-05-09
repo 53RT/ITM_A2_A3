@@ -10,6 +10,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.media.protocol.FileTypeDescriptor;
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import sun.audio.AudioStream;
+import sun.net.www.content.audio.wav;
+
 /**
  * 
  * This class creates acoustic thumbnails from various types of audio files. It
@@ -120,10 +130,55 @@ public class AudioThumbGenerator {
 		// ***************************************************************
 
 		// load the input audio file
+		
+		AudioInputStream in = null;
+		
+		try {
+			
+			in = AudioSystem.getAudioInputStream(input);
+		
+		} catch (UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		}		
+		
+		AudioFormat audioFormat = in.getFormat();	
+		
+    	AudioFormat decFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 	//PCM-Format erstellen
+                audioFormat.getSampleRate(),
+                16,
+                audioFormat.getChannels(),
+                audioFormat.getChannels() * 2,
+                audioFormat.getSampleRate(),
+                false);
+		
+		if (audioFormat != decFormat) 
+			;
+
+    	
+		AudioInputStream decIn = AudioSystem.getAudioInputStream(decFormat, in);
+		
+		AudioFileFormat audioFileFormat = null;
+		
+		try {
+			
+			audioFileFormat = AudioSystem.getAudioFileFormat(input);
+			
+		} catch (UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		}
 
 		// cut the audio data in the stream to a given length
+		
+		int bytesPerSecond = audioFormat.getFrameSize() * (int)audioFormat.getFrameRate();
+		in.skip(0 * bytesPerSecond);
+		
+		long framesForThumb = thumbNailLength * (int)audioFormat.getFrameRate();
+		
+		AudioInputStream thumb = new AudioInputStream(in, audioFormat, framesForThumb);		
 
 		// save the acoustic thumbnail as WAV file
+				
+		AudioSystem.write(thumb, audioFileFormat.getType(), outputFile);
 
 		return outputFile;
 	}

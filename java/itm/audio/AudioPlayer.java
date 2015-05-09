@@ -6,14 +6,21 @@ package itm.audio;
  *******************************************************************************/
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
+import javax.media.*;
+import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
+
+import sun.audio.AudioStream;
 
 /**
  * Plays an audio file using the system's default sound output device
@@ -85,11 +92,45 @@ public class AudioPlayer {
 
 		// open audio stream
 		
+		AudioInputStream in = AudioSystem.getAudioInputStream(input);		
+		
 		// get format
 		
-		// get decoded format
+		AudioFormat audioFormat = in.getFormat();	
 		
-		// get decoded audio input stream
+        String filename = input.getName();	        						//liest den aktuellen Dateinamen aus 
+        filename = filename.toLowerCase();									//ev. Grossschreibung raus
+		String format = filename.substring(filename.length() - 3);			//die letzten drei Buchstaben des Dateinamens -> Dateiendung
+        		
+		// get decoded format
+        
+    	AudioFormat decFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 	//PCM-Format erstellen
+                audioFormat.getSampleRate(),
+                16,
+                audioFormat.getChannels(),
+                audioFormat.getChannels() * 2,
+                audioFormat.getSampleRate(),
+                false);
+
+		
+        if (format.equals("wav")){
+        	System.out.println("wav!");
+        }
+        
+        if (format.equals("mp3")){
+        	System.out.println("mp3!");
+        }
+        
+        if (format.equals("ogg")){
+        	System.out.println("ogg!");
+
+        }
+        if (!format.equals("mp3") && (!format.equals("wav") && (!format.equals("ogg"))))
+        		System.out.println("Format nicht unterstützt!");
+
+		// get decoded audio input stream     
+        
+        din = AudioSystem.getAudioInputStream(decFormat, in);
  
 		return din;
 	}
@@ -115,11 +156,33 @@ public class AudioPlayer {
 
 		// get audio format
 		
+		AudioFormat audioFormat = audio.getFormat();
+		
 		// get a source data line
+		
+		 SourceDataLine sDataLine = null;	
+         DataLine.Info dataLineInfo = new DataLine.Info(SourceDataLine.class, audioFormat);
+		 sDataLine = (SourceDataLine) AudioSystem.getLine(dataLineInfo);
+		 sDataLine.open(audio.getFormat());
 		
 		// read samples from audio and write them to the data line 
 
+		 sDataLine.start();
+		 
+		 int buffer = 4096;
+		 byte[] bytesBuffer = new byte[buffer];
+		 int bytesRead = -1;
+		  
+		 while ((bytesRead = audio.read(bytesBuffer)) != -1) {
+		     sDataLine.write(bytesBuffer, 0, bytesRead);
+		 }
+		 
 		// properly close the line!
+         
+		 sDataLine.drain();
+         sDataLine.stop();
+		 sDataLine.close();
+			 
 	}
 
 	/**
