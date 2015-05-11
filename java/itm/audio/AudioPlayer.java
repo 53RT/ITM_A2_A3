@@ -92,7 +92,15 @@ public class AudioPlayer {
 
 		// open audio stream
 		
-		AudioInputStream in = AudioSystem.getAudioInputStream(input);		
+		AudioInputStream in = null;
+		
+		try {
+			
+			in = AudioSystem.getAudioInputStream(input);
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
 		
 		// get format
 		
