@@ -7,18 +7,12 @@ package itm.video;
 
 import itm.util.ImageCompare;
 
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import javax.imageio.ImageIO;
-
-import com.sun.java.swing.plaf.windows.resources.windows_zh_HK;
 import com.xuggle.mediatool.IMediaWriter;
 import com.xuggle.mediatool.ToolFactory;
 import com.xuggle.xuggler.ICodec;
@@ -31,8 +25,6 @@ import com.xuggle.xuggler.IStreamCoder;
 import com.xuggle.xuggler.IVideoPicture;
 import com.xuggle.xuggler.IVideoResampler;
 import com.xuggle.xuggler.Utils;
-import com.xuggle.xuggler.video.ConverterFactory;
-import com.xuggle.xuggler.video.IConverter;
 
 /**
  * This class reads video files, extracts metadata for both the audio and the
@@ -49,22 +41,21 @@ import com.xuggle.xuggler.video.IConverter;
  */
 public class VideoThumbnailGenerator {
 	
-	//ArrayList<IVideoPicture> allPictures = new ArrayList<IVideoPicture>();
+	ArrayList<IVideoPicture> allPictures = new ArrayList<IVideoPicture>();
 	ArrayList<BufferedImage> allPictures_Buff = new ArrayList<BufferedImage>();
+	
+	int framesTotal;
 	  IContainer outContainer;
 	  IStream outStream;
 	  IStreamCoder outStreamCoder;
 	    IStreamCoder videoCoder = null;
 	  IRational frameRate;
-
-	  Robot robot;
-	  Toolkit toolkit;
-	  Rectangle screenBounds;
 	  
 	  int vWidth;
 	  int vHeight;
 
 	  long firstTimeStamp=-1;
+	  
 	/**
 	 * Constructor.
 	 */
@@ -127,6 +118,7 @@ public class VideoThumbnailGenerator {
 	/**
 	 * Holt alle Bilder aus dem Input File und schreibt sie in die ArrayList
 	 */
+	@SuppressWarnings("deprecation")
 	protected void getImagesFromVideo(File input, int timeSpan){
 		
 		IContainer container = IContainer.make();
@@ -157,27 +149,17 @@ public class VideoThumbnailGenerator {
 	        break;
 	      }
 	    }
-		
 
 	    if (videoStreamId == -1)
 	      throw new RuntimeException("could not find video stream in container: "+ filepath);
-
-	    // Now we have found the video stream in this file.  Let's open up
-	    // our decoder so it can do work
 
 	    if (videoCoder.open() < 0)
 	      throw new RuntimeException(
 	        "could not open video decoder for container: " + filepath);
 
-	    System.out.println("PixelType: " + videoCoder.getPixelType());
-	    
-	    
-	    
 	    IVideoResampler resampler = null;
 	    if (videoCoder.getPixelType() != IPixelFormat.Type.BGR24)
 	    {
-	      // if this stream is not in BGR24, we're going to need to
-	      // convert it.  The VideoResampler does that for us.
 
 	      resampler = IVideoResampler.make(
 	        videoCoder.getWidth(), videoCoder.getHeight(), IPixelFormat.Type.BGR24,
@@ -187,51 +169,33 @@ public class VideoThumbnailGenerator {
 	          "could not create color space resampler for: " + filepath);
 	    }
 
-	    // Now, we start walking through the container looking at each packet.
-
 	    IPacket packet = IPacket.make();
 	    while(container.readNextPacket(packet) >= 0)
 	    {
 	      
-	      // Now we have a packet, let's see if it belongs to our video strea
-
 	      if (packet.getStreamIndex() == videoStreamId)
 	      {
-	        // We allocate a new picture to get the data out of Xuggle
-
 	        IVideoPicture picture = IVideoPicture.make(videoCoder.getPixelType(),
 	            videoCoder.getWidth(), videoCoder.getHeight());
 
 	        int offset = 0;
 	        while(offset < packet.getSize())
 	        {
-	          // Now, we decode the video, checking for any errors.
-
 	          int bytesDecoded = videoCoder.decodeVideo(picture, packet, offset);
 	          if (bytesDecoded < 0)
 	            throw new RuntimeException("got error decoding video in: " + filepath);
 	          offset += bytesDecoded;
 	          
-	          // Some decoders will consume data in a packet, but will not
-	          // be able to construct a full video picture yet.  Therefore
-	          // you should always check if you got a complete picture from
-	          // the decode.
-
 	          if (picture.isComplete())
 	          {
 	            IVideoPicture newPic = picture;
-	            System.out.println(picture.getPts()/1000000);
-	            
-	            // If the resampler is not null, it means we didn't get the
-	            // video in BGR24 format and need to convert it into BGR24
-	            // format.
 
 	            if (resampler != null)
 	            {
-	              // we must resample
 	              newPic = IVideoPicture.make(
 	                resampler.getOutputPixelFormat(), picture.getWidth(), 
 	                picture.getHeight());
+	              
 	              if (resampler.resample(newPic, picture) < 0)
 	                throw new RuntimeException(
 	                  "could not resample video from: " + filepath);
@@ -241,38 +205,16 @@ public class VideoThumbnailGenerator {
 	              throw new RuntimeException(
 	                "could not decode video as BGR 24 bit data in: " + filepath);
 
-	            // convert the BGR24 to an Java buffered image
+	            	allPictures.add(newPic);
 
-	            //	allPictures.add(newPic);
-
-	            	//Diesen Abschnitt nur durchgehen wenn TimeSpan es zulässt.
-	            	
-	            	//Wenns nicht 0 ist dann nur die Frames nehmen die PTS Mod Timespan == 0 und nur den ersten Frame
-	            	BufferedImage javaImage = Utils.videoPictureToImage(newPic);
-
-		            // process the video frame
-
-		            allPictures_Buff.add(javaImage);
-	            	
-	            // process the video frame
-
-	            //processFrame(newPic, javaImage);
-	            
 	          }
 	        }
 	      }
 	      else
 	      {
-	        // This packet isn't part of our video stream, so we just
-	        // silently drop it.
 	        do {} while(false);
 	      }
 	    }
-
-	    // Technically since we're exiting anyway, these will be cleaned up
-	    // by the garbage collector... but because we're nice people and
-	    // want to be invited places for Christmas, we're going to show how
-	    // to clean up.
 
 	    if (videoCoder != null)
 	    {
@@ -284,80 +226,69 @@ public class VideoThumbnailGenerator {
 	      container.close();
 	      container = null;
 	    }
-	
-	 
-	}
-	
-	
-	
-	public static BufferedImage convertToType(BufferedImage sourceImage,
-		      int targetType)
-		  {
-		    BufferedImage image;
-
-		    // if the source image is already the target type, return the source image
-
-		    if (sourceImage.getType() == targetType)
-		      image = sourceImage;
-
-		    // otherwise create a new image of the target type and draw the new
-		    // image
-
-		    else
-		    {
-		      image = new BufferedImage(sourceImage.getWidth(),
-		          sourceImage.getHeight(), targetType);
-		      image.getGraphics().drawImage(sourceImage, 0, 0, null);
-		    }
-
-		    return image;
-		  }
-
-	
-	/**
-	 * Wandelt bilder von BufferedIMages nach IVideoPicture um
-	 * 
-	 */
-	public void encodeImage(BufferedImage originalImage)
-	  {
-	    BufferedImage worksWithXugglerBufferedImage = convertToType(originalImage,
-	        BufferedImage.TYPE_3BYTE_BGR);
-	    IPacket packet = IPacket.make();
-
-	    long now = System.currentTimeMillis();
-	    if (firstTimeStamp == -1)
-	      firstTimeStamp = now;
 	    
-	    IConverter converter = null;
-	    try
-	    {
-	      converter = ConverterFactory.createConverter(
-	          worksWithXugglerBufferedImage, IPixelFormat.Type.YUV420P);
-	    }
-	    catch (UnsupportedOperationException e)
-	    {
-	      System.out.println(e.getMessage());
-	      e.printStackTrace(System.out);
-	    }
-
-	    long timeStamp = (now - firstTimeStamp)*1000; // convert to microseconds
-	    IVideoPicture outFrame = converter.toPicture(worksWithXugglerBufferedImage,
-	        timeStamp);
-
-	    outFrame.setQuality(0);
-	    int retval = outStreamCoder.encodeVideo(packet, outFrame, 0);
-	    if (retval < 0)
-	      throw new RuntimeException("could not encode video");
-	    if (packet.isComplete())
-	    {
-	      retval = outContainer.writePacket(packet);
-	      if (retval < 0)
-	        throw new RuntimeException("could not save packet to container");
-	    }
-
-	  }
-	
-	
+	    
+	    //Diesen Abschnitt nur durchgehen wenn TimeSpan es zulässt.
+    	
+    	//Wenns nicht 0 ist dann nur die Frames nehmen die PTS Mod Timespan == 0 und nur den ersten Frame
+    	//BufferedImage javaImage = Utils.videoPictureToImage(newPic);
+    	if(timeSpan > 0){
+    		System.out.println("Bilder werden in " + timeSpan + " Frequenz zum Thumbnail hinzugefügt.");
+    		
+    	 int numPictures = allPictures.size();
+    	 int startWert = 0;
+    	 for(int i = 0; i < (numPictures-1); i++){
+    		 if (startWert == allPictures.get(i).getPts()/1000000){
+    			 //Bild rendern und hinzufügen
+    			 BufferedImage pictureToAdd = Utils.videoPictureToImage(allPictures.get(i));
+    			 allPictures_Buff.add(pictureToAdd);
+    			 
+    			 //startWert auf nächstgrößeren erhöhen;
+    			 startWert = startWert + timeSpan;
+    		 }
+    	 }
+    		
+    	}
+    	
+    	if(timeSpan == 0){
+    		System.out.println("Bilder werden verglichen und zum Thumbnail hinzugefügt.");
+    		//ImageCompare tool = new ImageCompare(null,null);
+    		ArrayList<BufferedImage> tempList = new ArrayList<BufferedImage>();
+    		for(int i = 0; i < allPictures.size(); i++){
+    			tempList.add(Utils.videoPictureToImage(allPictures.get(i)));
+    		}
+    		System.out.println("Bilder konvertiert");
+    		//i Muss aus Perfomancegründen in größeren Zeitschritten erhöht werden
+    		for(int i = 0; i < allPictures.size(); i = i + 20){
+    		//Erstes Bild geben.
+    			System.out.println("Vergleiche Bild " + i );
+    		@SuppressWarnings("deprecation")
+			BufferedImage toCompare = Utils.videoPictureToImage(allPictures.get(i));
+    		allPictures_Buff.add(toCompare);
+    		
+    		//Solange wiederholen bis es kein Match mehr gibt.
+    		for(int j = i; j < allPictures.size(); j= j + 3){
+    			System.out.println("mit Bild " + j);
+    			BufferedImage comparingPartner = tempList.get(j);
+    			
+    			ImageCompare tool = new ImageCompare(toCompare,comparingPartner);
+    			tool.compare();
+    			
+    			if(tool.match() == false ){
+    				System.out.println("treffer");
+    				//Bild J hinzufügen und I auf J stellen
+    				allPictures_Buff.add(comparingPartner);
+    				i = j;
+    				break;
+    			}
+    			
+    		}
+    		}
+    	}
+	    
+	 framesTotal = allPictures_Buff.size();
+	 System.out.println("funktion beendet");
+	}
 	
 	/**
 	 * Processes the passed input video file and stores a thumbnail of it to the
@@ -394,43 +325,34 @@ public class VideoThumbnailGenerator {
 
 		String outFile = outputFile.getAbsolutePath();
 
-		//Create new Codec for encoding
-		ICodec codec = ICodec.guessEncodingCodec(null, null, outFile, null,
-		        ICodec.Type.CODEC_TYPE_VIDEO);
-		if (codec == null)
-		      throw new RuntimeException("could not guess a codec");
-
 		//Get Dimensions for encoding    
 		vHeight = allPictures_Buff.get(0).getHeight();
 		vWidth = allPictures_Buff.get(0).getWidth();
-		
-		//Create new Writer for the output stream
-		IMediaWriter videoWriter = ToolFactory.makeWriter(outFile);     
-		videoWriter.addVideoStream(0, 0, codec, vWidth,vHeight);
 		        
 		//Decision from the given Timespan
+		IMediaWriter outWriter = ToolFactory.makeWriter(outFile);
+		outWriter.addVideoStream(0,0, ICodec.ID.CODEC_ID_FLV1,vWidth,vHeight);
 		
-		
-		Long timeFrame = (long) 0;
-		int framesPerSecons = 1; // 30 fps ~ 1 Second for each Picture
-		
-		        for(int i = 0; i < allPictures_Buff.size(); i ++)
-		        {
-		        	
-		          BufferedImage image = allPictures_Buff.get(i);
-		          
-			       for(int j = 0; j < framesPerSecons; j++){
-			          
-			          videoWriter.encodeVideo(0, image,timeFrame,TimeUnit.SECONDS);
-			          timeFrame = timeFrame + 100;
-			          //Thread.sleep(1000);
-			        }
-		    
-		        }
-		        //Close Stream
-		        videoWriter.flush();
-		        videoWriter.close();
+		long startTime = System.nanoTime();
+		int länge = framesTotal;
+		int j = 0;
+		//64(frames) entspricht 1 Sekunde 
+		for (int i = 0; i < 64*länge ; i++) {
+			
+			outWriter.encodeVideo(0, allPictures_Buff.get(j), System.nanoTime()-startTime, TimeUnit.NANOSECONDS);
 
+			if(i%64 == 0){
+				j++;
+				if(j >= framesTotal){
+					break;
+				}
+			}
+			
+		}
+		        
+				outWriter.flush();
+				outWriter.close();
+		
 		return outputFile;
 	}
 
@@ -447,9 +369,9 @@ public class VideoThumbnailGenerator {
         }
         File fi = new File(args[0]);
         File fo = new File(args[1]);
-		
-		/* Zum Testen
-		File fi = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\panda.avi");
+		// Zum Testen
+		/*
+		File fi = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\space.flv");
 		File fo = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\");
 		*/
         
