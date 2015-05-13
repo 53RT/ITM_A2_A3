@@ -49,12 +49,12 @@ import com.xuggle.xuggler.video.IConverter;
  */
 public class VideoThumbnailGenerator {
 	
-	ArrayList<IVideoPicture> allPictures = new ArrayList<IVideoPicture>();
+	//ArrayList<IVideoPicture> allPictures = new ArrayList<IVideoPicture>();
 	ArrayList<BufferedImage> allPictures_Buff = new ArrayList<BufferedImage>();
 	  IContainer outContainer;
 	  IStream outStream;
 	  IStreamCoder outStreamCoder;
-
+	    IStreamCoder videoCoder = null;
 	  IRational frameRate;
 
 	  Robot robot;
@@ -127,7 +127,7 @@ public class VideoThumbnailGenerator {
 	/**
 	 * Holt alle Bilder aus dem Input File und schreibt sie in die ArrayList
 	 */
-	protected void getImagesFromVideo(File input){
+	protected void getImagesFromVideo(File input, int timeSpan){
 		
 		IContainer container = IContainer.make();
 		
@@ -139,7 +139,7 @@ public class VideoThumbnailGenerator {
 		int numStreams = container.getNumStreams();
 		
 		int videoStreamId = -1;
-	    IStreamCoder videoCoder = null;
+
 	    for(int i = 0; i < numStreams; i++)
 	    {
 	      // find the stream object
@@ -152,6 +152,7 @@ public class VideoThumbnailGenerator {
 
 	      if (coder.getCodecType() == ICodec.Type.CODEC_TYPE_VIDEO){
 	        videoStreamId = i;
+	        System.out.println("VIDEO CODER GESETZT");
 	        videoCoder = coder;
 	        break;
 	      }
@@ -168,6 +169,10 @@ public class VideoThumbnailGenerator {
 	      throw new RuntimeException(
 	        "could not open video decoder for container: " + filepath);
 
+	    System.out.println("PixelType: " + videoCoder.getPixelType());
+	    
+	    
+	    
 	    IVideoResampler resampler = null;
 	    if (videoCoder.getPixelType() != IPixelFormat.Type.BGR24)
 	    {
@@ -238,8 +243,11 @@ public class VideoThumbnailGenerator {
 
 	            // convert the BGR24 to an Java buffered image
 
-	            	allPictures.add(newPic);
+	            //	allPictures.add(newPic);
 
+	            	//Diesen Abschnitt nur durchgehen wenn TimeSpan es zulässt.
+	            	
+	            	//Wenns nicht 0 ist dann nur die Frames nehmen die PTS Mod Timespan == 0 und nur den ersten Frame
 	            	BufferedImage javaImage = Utils.videoPictureToImage(newPic);
 
 		            // process the video frame
@@ -381,162 +389,47 @@ public class VideoThumbnailGenerator {
 		// ***************************************************************
 
 		
-		
-		
-		// extract frames from input video
-		System.out.println(allPictures.size());
-		getImagesFromVideo(input);
-		System.out.println(allPictures.size());		
-		
-		// create a video writer
-		 frameRate = IRational.make(3, 1);
+		// extract Complete Frames from input video and save them in an ArrayList
+		getImagesFromVideo(input,timespan);
 
-		 toolkit = Toolkit.getDefaultToolkit();
-		 
-		    outContainer = IContainer.make();
-		    
+		String outFile = outputFile.getAbsolutePath();
 
-		    String outFile = outputFile.getAbsolutePath();
-		    
-		    int retval = outContainer.open(outFile, IContainer.Type.WRITE, null);
-		    if (retval < 0)
-		      throw new RuntimeException("could not open output file");
-
-		    ICodec codec = ICodec.guessEncodingCodec(null, null, outFile, null,
+		//Create new Codec for encoding
+		ICodec codec = ICodec.guessEncodingCodec(null, null, outFile, null,
 		        ICodec.Type.CODEC_TYPE_VIDEO);
-		    if (codec == null)
+		if (codec == null)
 		      throw new RuntimeException("could not guess a codec");
 
-		    outStream = outContainer.addNewStream(codec);
-		    outStreamCoder = outStream.getStreamCoder();
-
-		    outStreamCoder.setNumPicturesInGroupOfPictures(30);
-		    outStreamCoder.setCodec(codec);
-
-		    outStreamCoder.setBitRate(25000);
-		    outStreamCoder.setBitRateTolerance(9000);
-
-		    //
-		    int width = toolkit.getScreenSize().width;
-		    int height = toolkit.getScreenSize().height;
-
-		    outStreamCoder.setPixelType(IPixelFormat.Type.YUV420P);
-		    
-		    vHeight = allPictures.get(0).getHeight();
-		    vWidth = allPictures.get(0).getWidth();
-		    
-		    outStreamCoder.setHeight(vHeight);
-		    outStreamCoder.setWidth(vWidth);
-		    outStreamCoder.setFlag(IStreamCoder.Flags.FLAG_QSCALE, true);
-		    outStreamCoder.setGlobalQuality(0);
-
-		    outStreamCoder.setFrameRate(frameRate);
-		    outStreamCoder.setTimeBase(IRational.make(frameRate.getDenominator(),
-		        frameRate.getNumerator()));
-
-		    retval = outStreamCoder.open(null, null);
-		    if (retval < 0)
-		      throw new RuntimeException("could not open input decoder");
-		    retval = outContainer.writeHeader();
-		    if (retval < 0)
-		      throw new RuntimeException("could not write file header");
-		    
-		    
-		    ////////////////////////////////////////////////////////////////
-		    
+		//Get Dimensions for encoding    
+		vHeight = allPictures_Buff.get(0).getHeight();
+		vWidth = allPictures_Buff.get(0).getWidth();
 		
-		    
-		   
-		        IPacket packet = IPacket.make();
-
-		        IConverter converter = null;
+		//Create new Writer for the output stream
+		IMediaWriter videoWriter = ToolFactory.makeWriter(outFile);     
+		videoWriter.addVideoStream(0, 0, codec, vWidth,vHeight);
 		        
-		        long now = System.currentTimeMillis();
-		        
-		        BufferedImage worksWithXugglerBufferedImage = convertToType(allPictures_Buff.get(0),
-	 		            BufferedImage.TYPE_3BYTE_BGR);
-		        
-		        try
-		        {
-		          converter = ConverterFactory.createConverter(
-		              worksWithXugglerBufferedImage, IPixelFormat.Type.YUV420P);
-		        }
-		        catch (UnsupportedOperationException e)
-		        {
-		          System.out.println(e.getMessage());
-		          e.printStackTrace(System.out);
-		        }
-
-		        long timeStamp;
-		        
-		        ArrayList<IVideoPicture> convertedPictures = new ArrayList<IVideoPicture>();
-		        
-		        for(int i = 0; i < allPictures_Buff.size(); i++){
-		        	
-		        	  worksWithXugglerBufferedImage = convertToType(allPictures_Buff.get(i),
-		 		            BufferedImage.TYPE_3BYTE_BGR);
-		        	 
-		        	 timeStamp = i + 10000;
-		        	
-		        	 
-		        	convertedPictures.add(converter.toPicture(worksWithXugglerBufferedImage,
-		            timeStamp));
-		        	
-		        	convertedPictures.get(i).setQuality(0);
-		        	
-		        }
-		        	
-		        /*IVideoPicture outFrame = converter.toPicture(worksWithXugglerBufferedImage,
-		            timeStamp);*/
-		        
-		        IMediaWriter videoWriter = ToolFactory.makeWriter(outFile);
-		        
-		        videoWriter.addVideoStream(0, 0, codec, vWidth,vHeight);
-		        
-		        long startTime = System.nanoTime(); 
-		        
-		        for(int i = 0; i < allPictures_Buff.size(); i = i + 2)
+		//Decision from the given Timespan
+		
+		
+		Long timeFrame = (long) 0;
+		int framesPerSecons = 1; // 30 fps ~ 1 Second for each Picture
+		
+		        for(int i = 0; i < allPictures_Buff.size(); i ++)
 		        {
 		        	
-		        	System.out.println("Bin hier");
 		          BufferedImage image = allPictures_Buff.get(i);
-		          videoWriter.encodeVideo(0, image,
-		           System.nanoTime()-startTime, TimeUnit.NANOSECONDS);
-		          Thread.sleep(10);
-		        }
-		        videoWriter.close();
-		        
-		        
-		        
-		        /*for(int i = 0; i < convertedPictures.size(); i++){
-			        
-		        	
-			        retval = outStreamCoder.encodeVideo(packet, convertedPictures.get(i), 0);
-			        if (retval < 0)
-			          throw new RuntimeException("could not encode video");
-			        if (packet.isComplete())
-			        {
-			          retval = outContainer.writePacket(packet);
-			          if (retval < 0)
-			            throw new RuntimeException("could not save packet to container");
+		          
+			       for(int j = 0; j < framesPerSecons; j++){
+			          
+			          videoWriter.encodeVideo(0, image,timeFrame,TimeUnit.SECONDS);
+			          timeFrame = timeFrame + 100;
+			          //Thread.sleep(1000);
 			        }
-			        
-		        }*/
-		        
-		        
-		        
 		    
-		    
-		 /////////////////////////////////////////////////////////////////////////////
-		
-		// add a stream with the proper width, height and frame rate
-		
-		// if timespan is set to zero, compare the frames to use and add 
-		// only frames with significant changes to the final video
-
-		// loop: get the frame image, encode the image to the video stream
-		
-		// Close the writer
+		        }
+		        //Close Stream
+		        videoWriter.flush();
+		        videoWriter.close();
 
 		return outputFile;
 	}
@@ -547,17 +440,18 @@ public class VideoThumbnailGenerator {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		/*if (args.length < 3) {
+		if (args.length < 3) {
             System.out.println("usage: java itm.video.VideoThumbnailGenerator <input-video> <output-directory> <timespan>");
             System.out.println("usage: java itm.video.VideoThumbnailGenerator <input-directory> <output-directory> <timespan>");
             System.exit(1);
         }
         File fi = new File(args[0]);
         File fo = new File(args[1]);
-        */
+		
+		/* Zum Testen
 		File fi = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\panda.avi");
 		File fo = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\");
-
+		*/
         
         int timespan = 5;
         if(args.length == 3)
