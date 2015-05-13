@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
@@ -37,7 +38,6 @@ import com.xuggle.xuggler.Utils;
 public class VideoFrameGrabber {
 
 	ArrayList<BufferedImage> allPictures = new ArrayList<BufferedImage>();
-	
 	/**
 	 * Constructor.
 	 */
@@ -111,7 +111,11 @@ public class VideoFrameGrabber {
 			throw new IOException(output + " is not a directory!");
 
 		File outputFile = new File(output, input.getName() + "_thumb.jpg");
-		// load the input video file
+		
+
+		//The following code segments are taken from the Xuggler Demo (DecodeAndCapureFrames) - Copyright (c) 2008, 2010 Xuggle Inc.  All rights reserved. 
+		//I think i cant do it better and i want to mark it as not my complete own work.
+		
 		IContainer container = IContainer.make();
 		
 		String filepath = input.getAbsolutePath();
@@ -142,14 +146,14 @@ public class VideoFrameGrabber {
 		
 
 	    if (videoStreamId == -1)
-	      throw new RuntimeException("could not find video stream in container: "+ filepath);
+	      throw new RuntimeException("Es konnte kein Videostream in der Datei gefunden werden: "+ filepath);
 
 	    // Now we have found the video stream in this file.  Let's open up
 	    // our decoder so it can do work
 
 	    if (videoCoder.open() < 0)
 	      throw new RuntimeException(
-	        "could not open video decoder for container: " + filepath);
+	        "Die Datei konnte nicht decodiert werden: " + filepath);
 
 	    IVideoResampler resampler = null;
 	    if (videoCoder.getPixelType() != IPixelFormat.Type.BGR24)
@@ -162,7 +166,19 @@ public class VideoFrameGrabber {
 	        videoCoder.getWidth(), videoCoder.getHeight(), videoCoder.getPixelType());
 	      if (resampler == null)
 	        throw new RuntimeException(
-	          "could not create color space resampler for: " + filepath);
+	          "Nicht kompatibles Pixeltyp im Videostream gefunden: " + filepath);
+	      
+	      
+	      System.out.println("Codecname: " + videoCoder.getCodec().getLongName());
+	      System.out.println(videoCoder.getCodecID());
+
+	      System.out.println(videoCoder.getFrameRate());
+
+	      System.out.println(videoCoder.getHeight());
+	      
+	      System.out.println(videoCoder.getWidth());	      
+	      System.out.println((double)container.getDuration()/1000000.00);
+	      
 	    }
 
 	    // Now, we start walking through the container looking at each packet.
@@ -177,8 +193,7 @@ public class VideoFrameGrabber {
 	      {
 	        // We allocate a new picture to get the data out of Xuggle
 
-	        IVideoPicture picture = IVideoPicture.make(videoCoder.getPixelType(),
-	            videoCoder.getWidth(), videoCoder.getHeight());
+	        IVideoPicture picture = IVideoPicture.make(videoCoder.getPixelType(),videoCoder.getWidth(), videoCoder.getHeight());
 
 	        int offset = 0;
 	        while(offset < packet.getSize())
@@ -187,7 +202,7 @@ public class VideoFrameGrabber {
 
 	          int bytesDecoded = videoCoder.decodeVideo(picture, packet, offset);
 	          if (bytesDecoded < 0)
-	            throw new RuntimeException("got error decoding video in: " + filepath);
+	            throw new RuntimeException("Fehler beim decodieren: " + filepath);
 	          offset += bytesDecoded;
 	          
 	          // Some decoders will consume data in a packet, but will not
@@ -198,7 +213,6 @@ public class VideoFrameGrabber {
 	          if (picture.isComplete())
 	          {
 	            IVideoPicture newPic = picture;
-	            System.out.println(picture.getPts()/1000000);
 	            
 	            // If the resampler is not null, it means we didn't get the
 	            // video in BGR24 format and need to convert it into BGR24
@@ -220,7 +234,7 @@ public class VideoFrameGrabber {
 	                "could not decode video as BGR 24 bit data in: " + filepath);
 
 	            // convert the BGR24 to an Java buffered image
-
+	            
 	            BufferedImage javaImage = Utils.videoPictureToImage(newPic);
 
 	            // process the video frame
@@ -254,10 +268,13 @@ public class VideoFrameGrabber {
 	      container.close();
 	      container = null;
 	    }
-	
 	 
-	    BufferedImage middlePicture = allPictures.get(allPictures.size()/2);
-	    ImageIO.write(middlePicture, "JPEG" , outputFile);
+	 //Das mittlere Bild aller gespeicherten, vollständigen Bilder als auch das komplette Bild an mittlerer Zeitlicher Position lieferten das gleiche Ergebnis.
+	 //Aus diesem Grund wird für die Auswahl die weniger aufwändigere Methode genutzt und das mittlerer Bild aller Bilder genutzt da von einer gleichmäßigen
+	 //Verteilung der kompletten Bilder im Stream ausgegangen wird sollte diese Methode auch immer zuverlässig funktionieren.
+	    
+	 BufferedImage middlePicture = allPictures.get(allPictures.size()/2);
+	 ImageIO.write(middlePicture, "JPEG" , outputFile);
 	    
 		return outputFile;
 
@@ -271,19 +288,18 @@ public class VideoFrameGrabber {
 
 		// args = new String[] { "./media/video", "./test" };
 
-		/*if (args.length < 2) {
+		if (args.length < 2) {
 			System.out.println("usage: java itm.video.VideoFrameGrabber <input-videoFile> <output-directory>");
 			System.out.println("usage: java itm.video.VideoFrameGrabber <input-directory> <output-directory>");
 			System.exit(1);
 		}
 		File fi = new File(args[0]);
 		File fo = new File(args[1]);
-		*/
 
-		//Nur zu Testzwecken
+		/*Nur zu Testzwecken
 		File fi = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\DREIZEHN.AVI");
 		File fo = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\");
-
+		*/
 		
 		VideoFrameGrabber grabber = new VideoFrameGrabber();
 		grabber.batchProcessVideoFiles(fi, fo);

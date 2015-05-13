@@ -9,6 +9,7 @@ import itm.model.MediaFactory;
 import itm.model.VideoMedia;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -22,10 +23,15 @@ import javax.media.format.AudioFormat;
 import javax.media.format.VideoFormat;
 import javax.media.protocol.DataSource;
 
+import com.xuggle.xuggler.ICodec;
 import com.xuggle.xuggler.IContainer;
+import com.xuggle.xuggler.IPixelFormat;
 import com.xuggle.xuggler.IStream;
 import com.xuggle.xuggler.IStreamCoder;
+import com.xuggle.xuggler.IVideoResampler;
 import com.xuggle.xuggler.ICodec.Type;
+
+//Test
 
 /**
  * This class reads video files, extracts metadata for both the audio and the
@@ -115,6 +121,7 @@ public class VideoMetadataGenerator {
 	 *            overwritten or not
 	 * @return the created video media object
 	 */
+	@SuppressWarnings("deprecation")
 	protected VideoMedia processVideo(File input, File output, boolean overwrite) throws Exception {
 		if (!input.exists())
 			throw new IOException("Input file " + input + " was not found!");
@@ -146,12 +153,109 @@ public class VideoMetadataGenerator {
 		// create video media object
 		VideoMedia media = (VideoMedia) MediaFactory.createMedia(input);
 
-		// set video and audio stream metadata 
+		//VideoStream laden und VideoStream finden
+		IContainer container = IContainer.make();
 		
-		// add video tag
+		String filepath = input.getAbsolutePath();
+		
+		if (container.open(filepath, IContainer.Type.READ, null) < 0)
+		      throw new IllegalArgumentException("Datei konnte nicht geöffnet werden " + filepath);
+		
+		int numStreams = container.getNumStreams();
+		
+		int videoStreamId = -1;
+		int audioStreamId = -1;
+	    IStreamCoder videoCoder = null;
+	    IStreamCoder audioCoder = null;
+	    for(int i = 0; i < numStreams; i++)
+	    {
+	      // find the stream object
 
-		// write metadata
+	      IStream stream = container.getStream(i);
+
+	      // get the pre-configured decoder that can decode this stream;
+
+	      IStreamCoder coder = stream.getStreamCoder();
+
+	      if (coder.getCodecType() == ICodec.Type.CODEC_TYPE_VIDEO){
+	        videoStreamId = i;
+	        videoCoder = coder;
+	        if(videoStreamId != -1 && audioStreamId != -1)
+	        	break;
+	      }
+	      if (coder.getCodecType() == ICodec.Type.CODEC_TYPE_AUDIO){
+		        audioStreamId = i;
+		        audioCoder = coder;
+		        if(videoStreamId != -1 && audioStreamId != -1)
+		        	break;
+		      }
+		      
+	    }
 		
+
+	    if (videoStreamId == -1)
+	      throw new RuntimeException("Es konnte kein Videostream in der Datei gefunden werden: "+ filepath);
+	    if (audioStreamId == -1)
+		      throw new RuntimeException("Es konnte kein Audiostream in der Datei gefunden werden: "+ filepath);
+	    
+	    // Now we have found the video stream in this file.  Let's open up
+	    // our decoder so it can do work
+
+	    if (videoCoder.open() < 0)
+	      throw new RuntimeException(
+	        "Die Datei konnte nicht decodiert werden: " + filepath);
+	    if (audioCoder.open() < 0)
+		      throw new RuntimeException(
+		        "Die Datei konnte nicht decodiert werden: " + filepath);
+
+	    IVideoResampler resampler = null;
+	    if (videoCoder.getPixelType() != IPixelFormat.Type.BGR24)
+	    {
+	      // if this stream is not in BGR24, we're going to need to
+	      // convert it.  The VideoResampler does that for us.
+
+	      resampler = IVideoResampler.make(
+	        videoCoder.getWidth(), videoCoder.getHeight(), IPixelFormat.Type.BGR24,
+	        videoCoder.getWidth(), videoCoder.getHeight(), videoCoder.getPixelType());
+	      if (resampler == null)
+	        throw new RuntimeException(
+	          "Nicht kompatibles Pixeltyp im Videostream gefunden: " + filepath);
+	    }
+
+		// set video and audio stream metadata 
+	      //Video
+	      media.setVideoCodecName(videoCoder.getCodec().getLongName());
+	      media.setVideoCodecID(videoCoder.getCodecID().toString());
+	      media.setVideoFrameRate(videoCoder.getFrameRate().toString());
+	      media.setVideoLenght((double)container.getDuration()/1000000.00);
+	      media.setVideoHeight(videoCoder.getHeight());
+	      media.setVideoWidth(videoCoder.getWidth());
+	      
+	      //Audio
+	      media.setAudioCodecName(audioCoder.getCodec().getLongName());
+	      media.setAudioCodecID(audioCoder.getCodecID().toString());
+	      media.setAudioBitRate(audioCoder.getBitRate());
+	      media.setAudioNumChannels(audioCoder.getChannels());
+	      media.setAudioSampleRate(audioCoder.getSampleRate());
+	
+	      // add video tag
+	      media.addTag("video");
+	      
+		// write metadata
+
+	        FileWriter writer = new FileWriter(outputFile ,false);
+	        
+	        try {
+	       
+	        	writer.write(media.toString());
+	        	//writer.write(System.getProperty("line.separator"));
+
+	            writer.flush();
+	            writer.close();
+	         } catch (IOException e) {
+	           e.printStackTrace();
+	         }
+
 		return media;
 	}
 
@@ -170,6 +274,12 @@ public class VideoMetadataGenerator {
 		}
 		File fi = new File(args[0]);
 		File fo = new File(args[1]);
+		
+		/* zum testen
+		File fi = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\space.flv");
+		File fo = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\");
+		*/
+		
 		VideoMetadataGenerator videoMd = new VideoMetadataGenerator();
 		videoMd.batchProcessVideoFiles(fi, fo, true);
 	}
