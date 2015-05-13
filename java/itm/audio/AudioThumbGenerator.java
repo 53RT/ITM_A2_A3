@@ -10,6 +10,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.media.protocol.FileTypeDescriptor;
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import sun.audio.AudioStream;
+import sun.net.www.content.audio.wav;
+
 /**
  * 
  * This class creates acoustic thumbnails from various types of audio files. It
@@ -120,10 +130,95 @@ public class AudioThumbGenerator {
 		// ***************************************************************
 
 		// load the input audio file
+		
+		AudioInputStream in = null;
+		
+		try {
+			
+			in = AudioSystem.getAudioInputStream(input);
+		
+		} catch (UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		}		
+		
+		AudioFormat eingangsFormat = in.getFormat();	
+		
+    	AudioFormat decFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 	//PCM-Format erstellen
+                eingangsFormat.getSampleRate(),
+                16,
+                eingangsFormat.getChannels(),
+                eingangsFormat.getChannels() * 2,
+                eingangsFormat.getSampleRate(),
+                false);
+    	
+		AudioInputStream decIn = AudioSystem.getAudioInputStream(decFormat, in);
+		
+		AudioFileFormat eingangsFileFormat = null;
+		
+		try {
+			
+			eingangsFileFormat = AudioSystem.getAudioFileFormat(input);
+			
+		} catch (UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		}
 
 		// cut the audio data in the stream to a given length
+		
+		//int bytesPerSecond = eingangsFormat.getFrameSize() * (int) eingangsFormat.getFrameRate();
+		//in.skip(0 * bytesPerSecond);				//gerade nicht benoetigt -> nur wenn man nicht am Anfang starten will
+
+		
+		//Frame length (in ms) = (samples per frame / sample rate (in hz)) * 1000;
+		
+		System.out.println("eingangsFormat.getFrameSize(): " + eingangsFormat.getFrameSize());		//debug
+		System.out.println("eingangsFormat.getFrameRate(): " + eingangsFormat.getFrameRate());		//debug
+		
+		
+		System.out.println("eingangsformat: " + eingangsFormat);
+		System.out.println("framerate: " + eingangsFormat.getFrameRate());
+		
+		long thumbFrames = thumbNailLength * (int) eingangsFormat.getFrameRate();
+		
+		System.out.println("thumbFrames: " + thumbFrames);
+		
+        String filename = input.getName();	        						//liest den aktuellen Dateinamen aus 
+        filename = filename.toLowerCase();									//ev. Grossschreibung raus
+		String format = filename.substring(filename.length() - 3);			//die letzten drei Buchstaben des Dateinamens -> Dateiendung
+        	
+		AudioInputStream thumb = new AudioInputStream(in, eingangsFormat, thumbFrames);		
+
+		
+        if (format.equals("mp3")){
+        	System.out.println("mp3!");
+        	
+        	thumb = new AudioInputStream(in, eingangsFormat, thumbFrames * 550);	//fuer die mitgelieferten MP3s (alle die gleiche Qualität?) funktioniert das derweil für 10 sec
+        }
+        
+        if (format.equals("ogg")){
+        	System.out.println("ogg!");
+        	AudioInputStream dop = null;
+        	
+        	AudioFormat decccFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 	//PCM-Format erstellen
+                    eingangsFormat.getSampleRate(),
+                    16,
+                    eingangsFormat.getChannels(),
+                    eingangsFormat.getChannels() * 2,
+                    eingangsFormat.getSampleRate(),
+                    false);
+        	
+        	dop = AudioSystem.getAudioInputStream(decccFormat, in);
+        	
+        	AudioSystem.write(dop, AudioFileFormat.Type.WAVE, outputFile);
+        	
+        	return outputFile;
+        	
+        	//thumb = new AudioInputStream(in, eingangsFormat, 200000);
+        }
 
 		// save the acoustic thumbnail as WAV file
+						
+		AudioSystem.write(thumb, AudioFileFormat.Type.WAVE, outputFile);
 
 		return outputFile;
 	}
