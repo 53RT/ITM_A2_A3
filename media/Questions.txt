@@ -1,0 +1,28 @@
+Answer the following questions:
+
+2.1
+    Describe the physical appearance of sound and how is it converted to digital sampled audio. Explain how sampling works and the meaning of the terms amplitude,sampling frequency, and quantization.
+
+2.2
+    Why do WAV files require more storage space than MP3 files?
+
+    In the Java Sound API: what is a sample, what is a frame?
+
+2.3
+    How is volume (i.e., how loud a sound is) reflected in analog and digital audio signals? Why does it make sense to perform non-uniform quantization?
+
+    What is Pulse Code Modulation (PCM)?
+
+2.5
+    What is (de-)multiplexing? 
+	What is a codec?
+
+    In what color space are images usually represented in video files?
+	What color space is usually used for computer images?
+
+2.6
+    What is video transcoding?
+
+    Briefly describe and compare the video codecs we used in this assignment.
+
+    How does changing the configuration of the ImageCompare Object affect the thumbnail?
