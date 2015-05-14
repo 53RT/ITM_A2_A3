@@ -9,12 +9,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.concurrent.TimeUnit;
-
 import javax.imageio.ImageIO;
 
-import com.sun.prism.Image;
 import com.xuggle.xuggler.IContainer;
 import com.xuggle.xuggler.IPacket;
 import com.xuggle.xuggler.IPixelFormat;
@@ -121,7 +117,7 @@ public class VideoFrameGrabber {
 		String filepath = input.getAbsolutePath();
 		
 		if (container.open(filepath, IContainer.Type.READ, null) < 0)
-		      throw new IllegalArgumentException("Datei konnte nicht geöffnet werden " + filepath);
+		      throw new IllegalArgumentException("Datei konnte nicht geoeffnet werden " + filepath);
 		
 		int numStreams = container.getNumStreams();
 		
@@ -269,9 +265,9 @@ public class VideoFrameGrabber {
 	      container = null;
 	    }
 	 
-	 //Das mittlere Bild aller gespeicherten, vollständigen Bilder als auch das komplette Bild an mittlerer Zeitlicher Position lieferten das gleiche Ergebnis.
-	 //Aus diesem Grund wird für die Auswahl die weniger aufwändigere Methode genutzt und das mittlerer Bild aller Bilder genutzt da von einer gleichmäßigen
-	 //Verteilung der kompletten Bilder im Stream ausgegangen wird sollte diese Methode auch immer zuverlässig funktionieren.
+	 //Das mittlere Bild aller gespeicherten, vollstaendigen Bilder als auch das komplette Bild an mittlerer Zeitlicher Position lieferten das gleiche Ergebnis.
+	 //Aus diesem Grund wird fuer die Auswahl die weniger aufwaendigere Methode genutzt und das mittlerer Bild aller Bilder genutzt da von einer gleichmaeßigen
+	 //Verteilung der kompletten Bilder im Stream ausgegangen wird sollte diese Methode auch immer zuverlaessig funktionieren.
 	    
 	 BufferedImage middlePicture = allPictures.get(allPictures.size()/2);
 	 ImageIO.write(middlePicture, "JPEG" , outputFile);

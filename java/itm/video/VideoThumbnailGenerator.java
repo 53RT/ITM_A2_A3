@@ -262,8 +262,7 @@ public class VideoThumbnailGenerator {
     		for(int i = 0; i < allPictures.size(); i = i + 20){
     		//Erstes Bild geben.
     			System.out.println("Vergleiche Bild " + i );
-    		@SuppressWarnings("deprecation")
-			BufferedImage toCompare = Utils.videoPictureToImage(allPictures.get(i));
+    		BufferedImage toCompare = Utils.videoPictureToImage(allPictures.get(i));
     		allPictures_Buff.add(toCompare);
     		
     		//Solange wiederholen bis es kein Match mehr gibt.

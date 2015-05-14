@@ -159,7 +159,7 @@ public class VideoMetadataGenerator {
 		String filepath = input.getAbsolutePath();
 		
 		if (container.open(filepath, IContainer.Type.READ, null) < 0)
-		      throw new IllegalArgumentException("Datei konnte nicht geöffnet werden " + filepath);
+		      throw new IllegalArgumentException("Datei konnte nicht geoeffnet werden " + filepath);
 		
 		int numStreams = container.getNumStreams();
 		
@@ -195,8 +195,7 @@ public class VideoMetadataGenerator {
 
 	    if (videoStreamId == -1)
 	      throw new RuntimeException("Es konnte kein Videostream in der Datei gefunden werden: "+ filepath);
-	    if (audioStreamId == -1)
-		      throw new RuntimeException("Es konnte kein Audiostream in der Datei gefunden werden: "+ filepath);
+	    
 	    
 	    // Now we have found the video stream in this file.  Let's open up
 	    // our decoder so it can do work
@@ -204,9 +203,7 @@ public class VideoMetadataGenerator {
 	    if (videoCoder.open() < 0)
 	      throw new RuntimeException(
 	        "Die Datei konnte nicht decodiert werden: " + filepath);
-	    if (audioCoder.open() < 0)
-		      throw new RuntimeException(
-		        "Die Datei konnte nicht decodiert werden: " + filepath);
+	 
 
 	    IVideoResampler resampler = null;
 	    if (videoCoder.getPixelType() != IPixelFormat.Type.BGR24)
@@ -232,12 +229,15 @@ public class VideoMetadataGenerator {
 	      media.setVideoWidth(videoCoder.getWidth());
 	      
 	      //Audio
+	      if (audioStreamId != -1){
+			    
 	      media.setAudioCodecName(audioCoder.getCodec().getLongName());
 	      media.setAudioCodecID(audioCoder.getCodecID().toString());
 	      media.setAudioBitRate(audioCoder.getBitRate());
 	      media.setAudioNumChannels(audioCoder.getChannels());
 	      media.setAudioSampleRate(audioCoder.getSampleRate());
 	
+	      }
 	      // add video tag
 	      media.addTag("video");
 	      
@@ -266,7 +266,7 @@ public class VideoMetadataGenerator {
 	public static void main(String[] args) throws Exception {
 
 		// args = new String[] {"./media/video", "./media/md"};
-
+/*
 		if (args.length < 2) {
 			System.out.println("usage: java itm.video.VideoMetadataGenerator <input-video> <output-directory>");
 			System.out.println("usage: java itm.video.VideoMetadataGenerator <input-directory> <output-directory>");
@@ -274,11 +274,10 @@ public class VideoMetadataGenerator {
 		}
 		File fi = new File(args[0]);
 		File fo = new File(args[1]);
-		
-		/* zum testen
-		File fi = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\space.flv");
-		File fo = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\");
 		*/
+		// zum testen
+		File fi = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\panda.avi_thumb.swf");
+		File fo = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\");
 		
 		VideoMetadataGenerator videoMd = new VideoMetadataGenerator();
 		videoMd.batchProcessVideoFiles(fi, fo, true);
