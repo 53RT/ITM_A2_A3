@@ -254,7 +254,6 @@ public class VideoMetadataGenerator {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		// args = new String[] {"./media/video", "./media/md"};
 
 		if (args.length < 2) {
 			System.out.println("usage: java itm.video.VideoMetadataGenerator <input-video> <output-directory>");
@@ -264,9 +263,6 @@ public class VideoMetadataGenerator {
 		File fi = new File(args[0]);
 		File fo = new File(args[1]);
 		
-		// zum testen
-		//File fi = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\dutch.asf");
-		//File fo = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\");
 		
 		VideoMetadataGenerator videoMd = new VideoMetadataGenerator();
 		videoMd.batchProcessVideoFiles(fi, fo, true);
