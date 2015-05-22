@@ -153,16 +153,14 @@ public class AudioThumbGenerator {
 		}
 
 		// cut the audio data in the stream to a given length
-		
-		//int bytesPerSecond = eingangsFormat.getFrameSize() * (int) eingangsFormat.getFrameRate();
-					
+							
 		long thumbFrames = thumbNailLength * (int) eingangsFormat.getFrameRate();		//für WAV reicht das
 				
         String filename = input.getName();	        						//liest den aktuellen Dateinamen aus 
         filename = filename.toLowerCase();									//ev. Grossschreibung raus
 		String format = filename.substring(filename.length() - 3);			//die letzten drei Buchstaben des Dateinamens -> Dateiendung
         	
-		AudioInputStream thumb = new AudioInputStream(in, eingangsFormat, thumbFrames);		
+		AudioInputStream thumb = new AudioInputStream(in, eingangsFormat, thumbFrames);		//Neuen, kürzeren Stream erstellen
 		
         if (format.equals("mp3")){
         	
@@ -172,19 +170,18 @@ public class AudioThumbGenerator {
 			if (entry.getKey().equals("bitrate"))
 				 bitrate = (int) entry.getValue();
     		}
+    		AudioFormat audioFormat = in.getFormat();	
         	
-    		int framegroesse = (144 * bitrate) / 44100;							//Wert abhaengig von der jew. Bitrate des Files berechnen
-        	thumbFrames = thumbFrames * framegroesse;							//MP3-Thumbframes
+    		int framegroesse = (int) ((144 * bitrate) / audioFormat.getSampleRate());		//Wert abhaengig von der jew. Bitrate des Files berechnen
+        	thumbFrames = thumbFrames * framegroesse;										//MP3-Thumbframes
         	
         	thumb = new AudioInputStream(in, eingangsFormat, thumbFrames);	
         }
         
-        if (format.equals("ogg")){
+        if (format.equals("ogg")){									
             
     		AudioFormat audioFormat = in.getFormat();	
-    		
-    		System.out.println("samplerate: " + audioFormat.getSampleRate());
-            
+    		            
         	AudioFormat decFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 	//PCM-Format erstellen
                     audioFormat.getSampleRate(),
                     16,
@@ -193,7 +190,7 @@ public class AudioThumbGenerator {
                     audioFormat.getSampleRate(),
                     true);      	
         	
-        	File tempFile = new File(output, input.getName() + ".tmp");
+        	File tempFile = new File(output, input.getName() + ".tmp");		//Idee: Temporaeres File erstellen, dass dann eingelesen und umgewandelt wird. Direkt gings nicht. 
             FileOutputStream tempFOS = new FileOutputStream(tempFile); 
             
             byte[] buffer = new byte[4096];						//Buffer mit bestimmter Groesse erstellen
@@ -205,11 +202,12 @@ public class AudioThumbGenerator {
             
             tempFOS.close();
             FileInputStream oggFiStream = new FileInputStream(tempFile);
-            
-            thumb = new AudioInputStream(oggFiStream, eingangsFormat, 555000);
+
+        	thumbFrames = (long) (thumbNailLength * eingangsFormat.getSampleRate());										
+           
+            thumb = new AudioInputStream(oggFiStream, eingangsFormat, thumbFrames);			
             tempFile.delete();           
-        }
-        
+        }       
 
 		// save the acoustic thumbnail as WAV file
 						

@@ -171,18 +171,11 @@ public class AudioMetadataGenerator {
 		media.setEncoding(eingangsFormat.getEncoding().toString());		//Diese Infos sollten in allen behandelten Audiofiles enthalten sein
 		media.setFrequency((int) eingangsFormat.getSampleRate());
 		media.setChannels(eingangsFormat.getChannels());
-				
-		Iterator<Entry<String, Object>> it = formatProps.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<String, Object> entry = (Map.Entry<String, Object>)it.next();
-			if ((entry.getKey()).equals("bitrate")) 
+								
+		for (Map.Entry<String, Object> entry : formatProps.entrySet()) {	//Über die Keys ("vbr" und "bitrate") wird iteriert
+			if (entry.getKey().equalsIgnoreCase("bitrate"))					//bitrate-Key wird in AudioMedia gesetzt
 				media.setBitrate((int) entry.getValue());
 		}
-				
-		//for (Map.Entry<String, Object> entry : formatProps.entrySet()) {	//Über die Keys ("vbr" und "bitrate") wird iteriert
-			//if (entry.getKey().equalsIgnoreCase("bitrate"))					//bitrate-Key wird in AudioMedia gesetzt
-				//media.setBitrate((int) entry.getValue());
-		//}
 		
 		AudioFileFormat audioFileFormat = null;
 		
@@ -201,8 +194,6 @@ public class AudioMetadataGenerator {
 				e.printStackTrace();
 			}
 		
-		//System.out.println(audioFileFormatProps.toString());	//debug
-
 		// you might have to distinguish what properties are available for what audio format		
 		if (audioFileFormat.getType().toString().equals("WAVE")) {											//falls File = WAV 
 			
@@ -212,12 +203,9 @@ public class AudioMetadataGenerator {
 		}
 			
 		for (Map.Entry<String, Object> entry : audioFileFormatProps.entrySet()) {
-
-			//System.out.println(entry.getKey() + ": " + entry.getValue());
-					
+				
 			if (entry.getKey().equals("duration")) 
 				media.setDuration((Long) entry.getValue());
-			
 
 			if (entry.getKey().equals("author"))
 				media.setAuthor((String) entry.getValue());
