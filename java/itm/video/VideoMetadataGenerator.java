@@ -11,17 +11,7 @@ import itm.model.VideoMedia;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
-
-import javax.media.ControllerEvent;
-import javax.media.ControllerListener;
-import javax.media.Manager;
-import javax.media.Processor;
-import javax.media.control.TrackControl;
-import javax.media.format.AudioFormat;
-import javax.media.format.VideoFormat;
-import javax.media.protocol.DataSource;
 
 import com.xuggle.xuggler.ICodec;
 import com.xuggle.xuggler.IContainer;
@@ -29,7 +19,6 @@ import com.xuggle.xuggler.IPixelFormat;
 import com.xuggle.xuggler.IStream;
 import com.xuggle.xuggler.IStreamCoder;
 import com.xuggle.xuggler.IVideoResampler;
-import com.xuggle.xuggler.ICodec.Type;
 
 //Test
 
@@ -224,7 +213,7 @@ public class VideoMetadataGenerator {
 	      media.setVideoCodecName(videoCoder.getCodec().getLongName());
 	      media.setVideoCodecID(videoCoder.getCodecID().toString());
 	      media.setVideoFrameRate(videoCoder.getFrameRate().toString());
-	      media.setVideoLenght((double)container.getDuration()/1000000.00);
+	      media.setVideoLenght(Math.abs((double)container.getDuration()/1000000.00));
 	      media.setVideoHeight(videoCoder.getHeight());
 	      media.setVideoWidth(videoCoder.getWidth());
 	      
@@ -266,7 +255,7 @@ public class VideoMetadataGenerator {
 	public static void main(String[] args) throws Exception {
 
 		// args = new String[] {"./media/video", "./media/md"};
-/*
+
 		if (args.length < 2) {
 			System.out.println("usage: java itm.video.VideoMetadataGenerator <input-video> <output-directory>");
 			System.out.println("usage: java itm.video.VideoMetadataGenerator <input-directory> <output-directory>");
@@ -274,10 +263,10 @@ public class VideoMetadataGenerator {
 		}
 		File fi = new File(args[0]);
 		File fo = new File(args[1]);
-		*/
+		
 		// zum testen
-		File fi = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\panda.avi_thumb.swf");
-		File fo = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\");
+		//File fi = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\dutch.asf");
+		//File fo = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\");
 		
 		VideoMetadataGenerator videoMd = new VideoMetadataGenerator();
 		videoMd.batchProcessVideoFiles(fi, fo, true);
