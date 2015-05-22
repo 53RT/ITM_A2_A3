@@ -48,7 +48,7 @@ public class VideoThumbnailGenerator {
 	  IContainer outContainer;
 	  IStream outStream;
 	  IStreamCoder outStreamCoder;
-	    IStreamCoder videoCoder = null;
+	  IStreamCoder videoCoder = null;
 	  IRational frameRate;
 	  
 	  int vWidth;
@@ -259,18 +259,19 @@ public class VideoThumbnailGenerator {
     		}
     		System.out.println("Bilder konvertiert");
     		//i Muss aus Perfomancegründen in größeren Zeitschritten erhöht werden
-    		for(int i = 0; i < allPictures.size(); i = i + 20){
+    		for(int i = 0; i < allPictures.size(); i = i + 16){
     		//Erstes Bild geben.
     			System.out.println("Vergleiche Bild " + i );
     		BufferedImage toCompare = Utils.videoPictureToImage(allPictures.get(i));
     		allPictures_Buff.add(toCompare);
     		
     		//Solange wiederholen bis es kein Match mehr gibt.
-    		for(int j = i; j < allPictures.size(); j= j + 3){
-    			System.out.println("mit Bild " + j);
+    		for(int j = i; j < allPictures.size(); j = j + 4){
+    			System.out.println("Vergleiche Bild " + i + " mit Bild " + j );
     			BufferedImage comparingPartner = tempList.get(j);
     			
     			ImageCompare tool = new ImageCompare(toCompare,comparingPartner);
+    			tool.setParameters(10,10,8,8);
     			tool.compare();
     			
     			if(tool.match() == false ){
@@ -286,7 +287,7 @@ public class VideoThumbnailGenerator {
     	}
 	    
 	 framesTotal = allPictures_Buff.size();
-	 System.out.println("funktion beendet");
+	 System.out.println("funktion beendet " + framesTotal + " Bilder Gesamt");
 	}
 	
 	/**
@@ -328,29 +329,20 @@ public class VideoThumbnailGenerator {
 		vHeight = allPictures_Buff.get(0).getHeight();
 		vWidth = allPictures_Buff.get(0).getWidth();
 		        
+		
+		frameRate = IRational.make(1,1);
 		//Decision from the given Timespan
 		IMediaWriter outWriter = ToolFactory.makeWriter(outFile);
-		outWriter.addVideoStream(0,0, ICodec.ID.CODEC_ID_FLV1,vWidth,vHeight);
+		outWriter.addVideoStream(0,0, ICodec.ID.CODEC_ID_FLV1,frameRate,vWidth,vHeight);
 		
-		long startTime = System.nanoTime();
-		int länge = framesTotal;
-		int j = 0;
-		//64(frames) entspricht 1 Sekunde 
-		for (int i = 0; i < 64*länge ; i++) {
+		for(int j = 0; j < framesTotal; j++){
 			
-			outWriter.encodeVideo(0, allPictures_Buff.get(j), System.nanoTime()-startTime, TimeUnit.NANOSECONDS);
-
-			if(i%64 == 0){
-				j++;
-				if(j >= framesTotal){
-					break;
-				}
-			}
-			
+			outWriter.encodeVideo(0, allPictures_Buff.get(j), j, TimeUnit.SECONDS);
 		}
+		
 		        
-				outWriter.flush();
-				outWriter.close();
+		outWriter.flush();
+		outWriter.close();
 		
 		return outputFile;
 	}
@@ -368,9 +360,10 @@ public class VideoThumbnailGenerator {
         }
         File fi = new File(args[0]);
         File fo = new File(args[1]);
+        
 		// Zum Testen
 		/*
-		File fi = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\space.flv");
+		File fi = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\DREIZEHN.AVI");
 		File fo = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\");
 		*/
         
