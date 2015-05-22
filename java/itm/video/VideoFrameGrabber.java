@@ -108,9 +108,10 @@ public class VideoFrameGrabber {
 
 		File outputFile = new File(output, input.getName() + "_thumb.jpg");
 		
-
+		//---------------------------------------------------
 		//The following code segments are taken from the Xuggler Demo (DecodeAndCapureFrames) - Copyright (c) 2008, 2010 Xuggle Inc.  All rights reserved. 
 		//I think i cant do it better and i want to mark it as not my complete own work.
+		//---------------------------------------------------
 		
 		IContainer container = IContainer.make();
 		
@@ -266,7 +267,7 @@ public class VideoFrameGrabber {
 	    }
 	 
 	 //Das mittlere Bild aller gespeicherten, vollstaendigen Bilder als auch das komplette Bild an mittlerer Zeitlicher Position lieferten das gleiche Ergebnis.
-	 //Aus diesem Grund wird fuer die Auswahl die weniger aufwaendigere Methode genutzt und das mittlerer Bild aller Bilder genutzt da von einer gleichmaeﬂigen
+	 //Aus diesem Grund wird fuer die Auswahl die weniger aufwaendigere Methode genutzt und das mittlerer Bild aller Bilder genutzt da von einer gleichmaessigen
 	 //Verteilung der kompletten Bilder im Stream ausgegangen wird sollte diese Methode auch immer zuverlaessig funktionieren.
 	    
 	 BufferedImage middlePicture = allPictures.get(allPictures.size()/2);

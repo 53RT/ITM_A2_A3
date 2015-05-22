@@ -126,7 +126,7 @@ public class VideoThumbnailGenerator {
 		String filepath = input.getAbsolutePath();
 		
 		if (container.open(filepath, IContainer.Type.READ, null) < 0)
-		      throw new IllegalArgumentException("Datei konnte nicht geöffnet werden " + filepath);
+		      throw new IllegalArgumentException("Datei konnte nicht geoeffnet werden " + filepath);
 		
 		int numStreams = container.getNumStreams();
 		
@@ -228,22 +228,22 @@ public class VideoThumbnailGenerator {
 	    }
 	    
 	    
-	    //Diesen Abschnitt nur durchgehen wenn TimeSpan es zulässt.
+	    //Diesen Abschnitt nur durchgehen wenn TimeSpan es zulaesst.
     	
     	//Wenns nicht 0 ist dann nur die Frames nehmen die PTS Mod Timespan == 0 und nur den ersten Frame
     	//BufferedImage javaImage = Utils.videoPictureToImage(newPic);
     	if(timeSpan > 0){
-    		System.out.println("Bilder werden in " + timeSpan + " Frequenz zum Thumbnail hinzugefügt.");
+    		System.out.println("Bilder werden in " + timeSpan + " Frequenz zum Thumbnail hinzugefï¿½gt.");
     		
     	 int numPictures = allPictures.size();
     	 int startWert = 0;
     	 for(int i = 0; i < (numPictures-1); i++){
     		 if (startWert == allPictures.get(i).getPts()/1000000){
-    			 //Bild rendern und hinzufügen
+    			 //Bild rendern und hinzufï¿½gen
     			 BufferedImage pictureToAdd = Utils.videoPictureToImage(allPictures.get(i));
     			 allPictures_Buff.add(pictureToAdd);
     			 
-    			 //startWert auf nächstgrößeren erhöhen;
+    			 //startWert auf naechstgroesseren erhoehen;
     			 startWert = startWert + timeSpan;
     		 }
     	 }
@@ -251,14 +251,14 @@ public class VideoThumbnailGenerator {
     	}
     	
     	if(timeSpan == 0){
-    		System.out.println("Bilder werden verglichen und zum Thumbnail hinzugefügt.");
+    		System.out.println("Bilder werden verglichen und zum Thumbnail hinzugefï¿½gt.");
     		//ImageCompare tool = new ImageCompare(null,null);
     		ArrayList<BufferedImage> tempList = new ArrayList<BufferedImage>();
     		for(int i = 0; i < allPictures.size(); i++){
     			tempList.add(Utils.videoPictureToImage(allPictures.get(i)));
     		}
     		System.out.println("Bilder konvertiert");
-    		//i Muss aus Perfomancegründen in größeren Zeitschritten erhöht werden
+    		//i Muss aus Perfomancegruenden in groesseren Zeitschritten erhoeht werden
     		for(int i = 0; i < allPictures.size(); i = i + 16){
     		//Erstes Bild geben.
     			System.out.println("Vergleiche Bild " + i );
@@ -276,7 +276,7 @@ public class VideoThumbnailGenerator {
     			
     			if(tool.match() == false ){
     				System.out.println("treffer");
-    				//Bild J hinzufügen und I auf J stellen
+    				//Bild J hinzufuegen und I auf J stellen
     				allPictures_Buff.add(comparingPartner);
     				i = j;
     				break;
@@ -332,8 +332,10 @@ public class VideoThumbnailGenerator {
 		
 		frameRate = IRational.make(1,1);
 		//Decision from the given Timespan
+		
 		IMediaWriter outWriter = ToolFactory.makeWriter(outFile);
 		outWriter.addVideoStream(0,0, ICodec.ID.CODEC_ID_FLV1,frameRate,vWidth,vHeight);
+		
 		
 		for(int j = 0; j < framesTotal; j++){
 			
@@ -353,21 +355,21 @@ public class VideoThumbnailGenerator {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		if (args.length < 3) {
+		/*if (args.length < 3) {
             System.out.println("usage: java itm.video.VideoThumbnailGenerator <input-video> <output-directory> <timespan>");
             System.out.println("usage: java itm.video.VideoThumbnailGenerator <input-directory> <output-directory> <timespan>");
             System.exit(1);
         }
         File fi = new File(args[0]);
         File fo = new File(args[1]);
-        
+        */
 		// Zum Testen
-		/*
+		
 		File fi = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\DREIZEHN.AVI");
 		File fo = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\");
-		*/
+		
         
-        int timespan = 5;
+        int timespan = 0;
         if(args.length == 3)
             timespan = Integer.parseInt(args[2]);
         

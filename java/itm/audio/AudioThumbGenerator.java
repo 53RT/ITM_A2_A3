@@ -226,7 +226,7 @@ public class AudioThumbGenerator {
 
 		args = new String[]{"./media/audio", "./test", "10"};
 		
-		if (args.length < 3) {
+		/*if (args.length < 3) {
 			System.out
 					.println("usage: java itm.audio.AudioThumbGenerator <input-audioFile> <output-directory> <length>");
 			System.out
@@ -235,6 +235,10 @@ public class AudioThumbGenerator {
 		}
 		File fi = new File(args[0]);
 		File fo = new File(args[1]);
+		*/
+		File fi = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\audio\\Epoq-Lepidoptera.ogg");
+		File fo = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\audio\\");
+		
 		Integer length = new Integer(args[2]);
 		AudioThumbGenerator audioThumb = new AudioThumbGenerator(length.intValue());
 		audioThumb.batchProcessAudioFiles(fi, fo);
