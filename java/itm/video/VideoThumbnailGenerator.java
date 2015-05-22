@@ -126,7 +126,7 @@ public class VideoThumbnailGenerator {
 		String filepath = input.getAbsolutePath();
 		
 		if (container.open(filepath, IContainer.Type.READ, null) < 0)
-		      throw new IllegalArgumentException("Datei konnte nicht geöffnet werden " + filepath);
+		      throw new IllegalArgumentException("Datei konnte nicht geï¿½ffnet werden " + filepath);
 		
 		int numStreams = container.getNumStreams();
 		
@@ -228,22 +228,22 @@ public class VideoThumbnailGenerator {
 	    }
 	    
 	    
-	    //Diesen Abschnitt nur durchgehen wenn TimeSpan es zulässt.
+	    //Diesen Abschnitt nur durchgehen wenn TimeSpan es zulï¿½sst.
     	
     	//Wenns nicht 0 ist dann nur die Frames nehmen die PTS Mod Timespan == 0 und nur den ersten Frame
     	//BufferedImage javaImage = Utils.videoPictureToImage(newPic);
     	if(timeSpan > 0){
-    		System.out.println("Bilder werden in " + timeSpan + " Frequenz zum Thumbnail hinzugefügt.");
+    		System.out.println("Bilder werden in " + timeSpan + " Frequenz zum Thumbnail hinzugefï¿½gt.");
     		
     	 int numPictures = allPictures.size();
     	 int startWert = 0;
     	 for(int i = 0; i < (numPictures-1); i++){
     		 if (startWert == allPictures.get(i).getPts()/1000000){
-    			 //Bild rendern und hinzufügen
+    			 //Bild rendern und hinzufï¿½gen
     			 BufferedImage pictureToAdd = Utils.videoPictureToImage(allPictures.get(i));
     			 allPictures_Buff.add(pictureToAdd);
     			 
-    			 //startWert auf nächstgrößeren erhöhen;
+    			 //startWert auf nï¿½chstgrï¿½ï¿½eren erhï¿½hen;
     			 startWert = startWert + timeSpan;
     		 }
     	 }
@@ -251,14 +251,14 @@ public class VideoThumbnailGenerator {
     	}
     	
     	if(timeSpan == 0){
-    		System.out.println("Bilder werden verglichen und zum Thumbnail hinzugefügt.");
+    		System.out.println("Bilder werden verglichen und zum Thumbnail hinzugefï¿½gt.");
     		//ImageCompare tool = new ImageCompare(null,null);
     		ArrayList<BufferedImage> tempList = new ArrayList<BufferedImage>();
     		for(int i = 0; i < allPictures.size(); i++){
     			tempList.add(Utils.videoPictureToImage(allPictures.get(i)));
     		}
     		System.out.println("Bilder konvertiert");
-    		//i Muss aus Perfomancegründen in größeren Zeitschritten erhöht werden
+    		//i Muss aus Perfomancegrï¿½nden in grï¿½ï¿½eren Zeitschritten erhï¿½ht werden
     		for(int i = 0; i < allPictures.size(); i = i + 16){
     		//Erstes Bild geben.
     			System.out.println("Vergleiche Bild " + i );
@@ -276,7 +276,7 @@ public class VideoThumbnailGenerator {
     			
     			if(tool.match() == false ){
     				System.out.println("treffer");
-    				//Bild J hinzufügen und I auf J stellen
+    				//Bild J hinzufï¿½gen und I auf J stellen
     				allPictures_Buff.add(comparingPartner);
     				i = j;
     				break;

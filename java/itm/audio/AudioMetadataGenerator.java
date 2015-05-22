@@ -171,18 +171,11 @@ public class AudioMetadataGenerator {
 		media.setEncoding(eingangsFormat.getEncoding().toString());		//Diese Infos sollten in allen behandelten Audiofiles enthalten sein
 		media.setFrequency((int) eingangsFormat.getSampleRate());
 		media.setChannels(eingangsFormat.getChannels());
-				
-		Iterator<Entry<String, Object>> it = formatProps.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<String, Object> entry = (Map.Entry<String, Object>)it.next();
-			if ((entry.getKey()).equals("bitrate")) 
+								
+		for (Map.Entry<String, Object> entry : formatProps.entrySet()) {	//Über die Keys ("vbr" und "bitrate") wird iteriert
+			if (entry.getKey().equalsIgnoreCase("bitrate"))					//bitrate-Key wird in AudioMedia gesetzt
 				media.setBitrate((int) entry.getValue());
 		}
-				
-		//for (Map.Entry<String, Object> entry : formatProps.entrySet()) {	//Über die Keys ("vbr" und "bitrate") wird iteriert
-			//if (entry.getKey().equalsIgnoreCase("bitrate"))					//bitrate-Key wird in AudioMedia gesetzt
-				//media.setBitrate((int) entry.getValue());
-		//}
 		
 		AudioFileFormat audioFileFormat = null;
 		

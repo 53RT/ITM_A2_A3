@@ -172,8 +172,10 @@ public class AudioThumbGenerator {
 			if (entry.getKey().equals("bitrate"))
 				 bitrate = (int) entry.getValue();
     		}
+    		AudioFormat audioFormat = in.getFormat();	
+
         	
-    		int framegroesse = (144 * bitrate) / 44100;							//Wert abhaengig von der jew. Bitrate des Files berechnen
+    		int framegroesse = (int) ((144 * bitrate) / audioFormat.getSampleRate());							//Wert abhaengig von der jew. Bitrate des Files berechnen
         	thumbFrames = thumbFrames * framegroesse;							//MP3-Thumbframes
         	
         	thumb = new AudioInputStream(in, eingangsFormat, thumbFrames);	
@@ -183,7 +185,7 @@ public class AudioThumbGenerator {
             
     		AudioFormat audioFormat = in.getFormat();	
     		
-    		System.out.println("samplerate: " + audioFormat.getSampleRate());
+    		//System.out.println("samplerate: " + audioFormat.getSampleRate()); 		//debug
             
         	AudioFormat decFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 	//PCM-Format erstellen
                     audioFormat.getSampleRate(),
