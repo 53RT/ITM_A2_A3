@@ -194,8 +194,6 @@ public class AudioMetadataGenerator {
 				e.printStackTrace();
 			}
 		
-		//System.out.println(audioFileFormatProps.toString());	//debug
-
 		// you might have to distinguish what properties are available for what audio format		
 		if (audioFileFormat.getType().toString().equals("WAVE")) {											//falls File = WAV 
 			
@@ -205,12 +203,9 @@ public class AudioMetadataGenerator {
 		}
 			
 		for (Map.Entry<String, Object> entry : audioFileFormatProps.entrySet()) {
-
-			//System.out.println(entry.getKey() + ": " + entry.getValue());
-					
+				
 			if (entry.getKey().equals("duration")) 
 				media.setDuration((Long) entry.getValue());
-			
 
 			if (entry.getKey().equals("author"))
 				media.setAuthor((String) entry.getValue());
