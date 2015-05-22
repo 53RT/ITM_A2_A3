@@ -7,10 +7,23 @@ package itm.audio;
 
 import itm.model.AudioMedia;
 import itm.model.MediaFactory;
+import itm.util.IOUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import sun.net.www.content.audio.wav;
+import javazoom.jl.converter.WaveFile;
 
 /**
  * This class reads audio files of various formats and stores some basic audio
@@ -69,7 +82,7 @@ public class AudioMetadataGenerator {
 					} catch (Exception e0) {
 						System.err
 								.println("Error when creating metadata from file "
-										+ input + " : " + e0.toString());
+										+ f + " : " + e0.toString());					//input mit "f" überschrieben!!! Zeigt sonst nicht genauen Dateinamen an (fürs debuggen)
 					}
 
 				}
@@ -142,16 +155,101 @@ public class AudioMetadataGenerator {
 		AudioMedia media = (AudioMedia) MediaFactory.createMedia(input);		
 
 		// load the input audio file, do not decode
-
+		AudioInputStream in = null;
+					
+		try {
+			in = AudioSystem.getAudioInputStream(input);
+		} catch (UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		}
+						
 		// read AudioFormat properties
+		AudioFormat eingangsFormat = in.getFormat();
+		
+		Map<String, Object> formatProps = eingangsFormat.properties();		//Map aus Audioformat-Eigenschaften
 
-		// read file-type specific properties
+		media.setEncoding(eingangsFormat.getEncoding().toString());		//Diese Infos sollten in allen behandelten Audiofiles enthalten sein
+		media.setFrequency((int) eingangsFormat.getSampleRate());
+		media.setChannels(eingangsFormat.getChannels());
+				
+		Iterator<Entry<String, Object>> it = formatProps.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, Object> entry = (Map.Entry<String, Object>)it.next();
+			if ((entry.getKey()).equals("bitrate")) 
+				media.setBitrate((int) entry.getValue());
+		}
+				
+		//for (Map.Entry<String, Object> entry : formatProps.entrySet()) {	//Über die Keys ("vbr" und "bitrate") wird iteriert
+			//if (entry.getKey().equalsIgnoreCase("bitrate"))					//bitrate-Key wird in AudioMedia gesetzt
+				//media.setBitrate((int) entry.getValue());
+		//}
+		
+		AudioFileFormat audioFileFormat = null;
+		
+		try {
+			audioFileFormat = AudioSystem.getAudioFileFormat(input);
+		} catch (UnsupportedAudioFileException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		Map<String, Object> audioFileFormatProps = null;
+			
+			try {
+				audioFileFormatProps = AudioSystem.getAudioFileFormat(input).properties();
+			} catch (UnsupportedAudioFileException e) {
+				e.printStackTrace();
+			}
+		
+		//System.out.println(audioFileFormatProps.toString());	//debug
 
-		// you might have to distinguish what properties are available for what audio format
+		// you might have to distinguish what properties are available for what audio format		
+		if (audioFileFormat.getType().toString().equals("WAVE")) {											//falls File = WAV 
+			
+			long frames = audioFileFormat.getFrameLength();													//Laenge berechnen und in MicroSec fuer AudioMedia-Klasse bringen
+			double durationInMicroSeconds = (frames / eingangsFormat.getFrameRate()) * 1000000;
+			media.setDuration((long) durationInMicroSeconds);
+		}
+			
+		for (Map.Entry<String, Object> entry : audioFileFormatProps.entrySet()) {
+
+			//System.out.println(entry.getKey() + ": " + entry.getValue());
+					
+			if (entry.getKey().equals("duration")) 
+				media.setDuration((Long) entry.getValue());
+			
+
+			if (entry.getKey().equals("author"))
+				media.setAuthor((String) entry.getValue());
+
+			if (entry.getKey().equals("title"))
+				media.setTitle((String) entry.getValue());
+
+			if (entry.getKey().equals("date"))
+				media.setDate((String) entry.getValue());
+
+			if (entry.getKey().equals("comment"))
+				media.setComment((String) entry.getValue());
+
+			if (entry.getKey().equals("album"))
+				media.setAlbum((String) entry.getValue());
+
+			if (entry.getKey().equals("track") || entry.getKey().equals("mp3.id3tag.track") || entry.getKey().equals("ogg.comment.track"))
+				media.setTrack((String) entry.getValue());
+			
+			if (entry.getKey().equals("composer") || entry.getKey().equals("mp3.id3tag.composer") || entry.getKey().equals("ogg.comment.composer"))
+				media.setComposer((String) entry.getValue());
+
+			if (entry.getKey().equals("genre") || entry.getKey().equals("mp3.id3tag.genre") || entry.getKey().equals("ogg.comment.genre"))
+				media.setGenre((String) entry.getValue());
+		}
 
 		// add a "audio" tag
+		media.addTag("audio");
 
 		// close the audio and write the md file.
+		in.close();
+		IOUtil.writeFile(media.serializeObject(), outputFile);
 
 		return media;
 	}

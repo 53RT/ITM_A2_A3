@@ -95,9 +95,7 @@ public class AudioPlayer {
 		AudioInputStream in = null;
 		
 		try {
-			
-			in = AudioSystem.getAudioInputStream(input);
-		
+			in = AudioSystem.getAudioInputStream(input);	
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
@@ -119,23 +117,8 @@ public class AudioPlayer {
                 audioFormat.getChannels() * 2,
                 audioFormat.getSampleRate(),
                 false);
-
 		
-        if (format.equals("wav")){
-        	System.out.println("wav!");
-        }
-        
-        if (format.equals("mp3")){
-        	System.out.println("mp3!");
-        }
-        
-        if (format.equals("ogg")){
-        	System.out.println("ogg!");
-
-        }
-        if (!format.equals("mp3") && (!format.equals("wav") && (!format.equals("ogg"))))
-        		System.out.println("Format nicht unterstützt!");
-
+    	
 		// get decoded audio input stream     
         
         din = AudioSystem.getAudioInputStream(decFormat, in);
@@ -177,11 +160,11 @@ public class AudioPlayer {
 
 		 sDataLine.start();
 		 
-		 int buffer = 4096;
+		 int buffer = 4096;												//Buffer mit bestimmter Groesse erstellen
 		 byte[] bytesBuffer = new byte[buffer];
 		 int bytesRead = -1;
 		  
-		 while ((bytesRead = audio.read(bytesBuffer)) != -1) {
+		 while ((bytesRead = audio.read(bytesBuffer)) != -1) {			//stoppen, wenn keine Daten mehr nachkommen
 		     sDataLine.write(bytesBuffer, 0, bytesRead);
 		 }
 		 
@@ -189,8 +172,7 @@ public class AudioPlayer {
          
 		 sDataLine.drain();
          sDataLine.stop();
-		 sDataLine.close();
-			 
+		 sDataLine.close();		 
 	}
 
 	/**
