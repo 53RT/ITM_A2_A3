@@ -15,14 +15,71 @@ Answer the following questions:
 
 2.5
     What is (de-)multiplexing? 
+	Multixplex-verfahren erlauben es mehrere Kanäle oder Signal über einen Leiter zu übertragen. Dabei ist die Idee, das die zusammengelegten Signale beim Empfänger wieder entbündelt und weiterverarbeitet werden können.
+	Am beispiel eines Videos, könnte man einen Audiostream und einen Bildstream Multiplexing zu einem Stream codieren der seriell weitergeleitet werden kann. Der Empfänger kann wiederum den Stream durch demultiplexing auf Bild und Audiostream aufteilen.
 	What is a codec?
-
+	Ein Codec ist in der Regel ein Verfahren wie mit Daten umgegangen wird. Das Verfahren gibt vor wie die Daten codiert und encodiert werden. Dabei können komprimierungsverfahren oder andere Algorithmen eingesetzt werden um ein bestimmtes Ziel (Speichereffizienz, Qualität, o.ä.) zu erreichen.
+	Bekannte Codecs für Bilder ist JPEG, für Audio dateien MP3 und für Videos H264 oder MPEG4.
+	
     In what color space are images usually represented in video files?
+	Beim bearbeiten der Video Tasks war oft eine Codierung der IVideoPictures von oder nach YUV notwendig.
+	Es ist also YUV das auf der Enkodierung von Helligkeit, Sättigung und Chrominanz beruht.
+	
 	What color space is usually used for computer images?
-
+	Computergrafiken werden in der Regel im RGB Farbraum abgespeichert. Bildschirme als größte Ausabegerätegruppe von Computern legen dies nahe.
+	
 2.6
     What is video transcoding?
-
+	Videotranskodierung ist die Überführung in ein anderes Format. Dabei wird ein anderer Codec zum decodieren verwendet.
+	
     Briefly describe and compare the video codecs we used in this assignment.
-
+	
+	AVI
+	Ist ein altes von Microsoft entwickelter Codec, kann meistens von DVD Spielern gelesen werden. Audio und Video verzahnt, Seitenverhältnis kann nicht erkannt werden.
+	SWF
+	Pixelperfekt, besser für Animationen und Bildschirme als für Kameraaufnahmen. Es kann durch gleichbleibende Pixel einen guten Kompressionsvorteil erreichen.
+	
+	FLV
+	Von Adobe entwickeltes Flash Video format. Für Videowiedergabe über das Internet (Youtube,MyVideo) geeignet.
+	
     How does changing the configuration of the ImageCompare Object affect the thumbnail?
+	Es gibt vier Parameter zum justieren. Mit CompareX und CompareY lässt sich die Blockgröße einstellen die zum Vergleich herangezogen werden. Mit FactorA und FactorD
+	wird bestimmt, wie große die Helligkeitsunterschiede in den Blöcken sein muss damit das Bild als unterschiedlich gezählt wird.
+	
+	Bei der Konfiguration gibt es einen spürbaren Tradeoff. Eine kleine Blockgröße resultiert in vielen unterschiedlichen Bildern und einer guten Laufzeit, jedoch ist bei einer 
+	FPS von 1 Sec das Thumbnail länger als das Original. Eine größere Blockgröße und eine präzisere EInstellung der Helligkeitsunterschiede hat sehr lange laufzeiten zur Folge bei einem besseren Ergebnis.
+	
+	Aus diesem Grund wird der Default wert von 10... etwas angepasst und nur jedes zehnte Bild mit jedem 3. Bild verglichen.
+	
+	
+	Welche Parameter gibt es?
+	CompareX CompareY Unterteilung in Blöcke
+	FactorA Helligkeitsunterschiede in den Blöcken
+	FactorD wie genau die Helligkeitsmessung sein soll.
+	
+	+20
+	+3
+	
+	Dutch.asf
+	Welche Änderungen gibt es? Anzahl Bilder bei Default : 34
+	CompareX: 10
+	CompareY: 10
+	
+	Factor A: 10
+	Factor D: 10
+	
+	CompareX & CompareY = 4 -> 43 Bilder
+	CompareX & CompareY = 1 -> 43 Bilder
+	
+	CompareX & CompareY = 40 -> 43 Bilder
+	
+	Jedes Bild vergleichen:
+	
+	Default : 84 Bilder
+	
+	Compare: 1 229 - Schnellere Laufzeit
+	Compare: 4 209
+	Compare: 10 84 träge laufzeit
+	Compare: 20 sehr langsam (abgebrochen nach 5 min)
+	
+	FactorA

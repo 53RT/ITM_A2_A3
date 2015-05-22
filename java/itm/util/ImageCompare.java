@@ -1,8 +1,6 @@
 package itm.util;
 
 import javax.swing.*;
-import java.io.*;
-import java.util.*;
 import java.awt.*;
 import java.awt.image.*;
 
