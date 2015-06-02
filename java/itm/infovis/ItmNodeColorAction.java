@@ -2,7 +2,7 @@ package itm.infovis;
 
 /*******************************************************************************
  This file is part of the ITM course 2015
- (c) University of Vienna 2008-2015
+ (c) University of Vienna 2009-2015
  *******************************************************************************/
 
 import prefuse.action.assignment.ColorAction;

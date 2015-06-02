@@ -5,9 +5,25 @@ package itm.image;
     (c) University of Vienna 2009-2015
 *******************************************************************************/
 
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
+import javax.imageio.spi.ImageWriterSpi;
+import javax.imageio.stream.FileImageOutputStream;
+
+import com.xuggle.mediatool.IMediaDebugListener.Mode;
+
+import sun.awt.image.codec.JPEGParam;
+import sun.net.www.content.image.jpeg;
 
 /**
     This class converts images into various image formats (BMP, PNG, ...).
@@ -16,11 +32,13 @@ import java.util.ArrayList;
     
     If the input file/dir or the output directory do not exist, an exception is thrown.
 */
-public class ImageConverter {
+public class ImageConverter 
+{
 
     public final static String BMP = "bmp";
     public final static String PNG = "png";
     public final static String JPEG = "jpeg";
+    public final static String JPG = "jpg";
    
     /**
         Constructor.
@@ -105,12 +123,53 @@ public class ImageConverter {
 
         // load the input image
        
+        BufferedImage testImg = null;
+                               
+        try {
+			testImg = ImageIO.read(input);
+		} catch (Exception e) { System.err.println( "Error loading Inputfile: " + e.toString() ); }
+        
+        BufferedImage leeresImage = new BufferedImage(testImg.getWidth(), testImg.getHeight(), BufferedImage.TYPE_INT_RGB);   //neues leeres Image mit den Werten vom Input-Bild erstellen
+        
         // encode and save the image 
+                
+        leeresImage.createGraphics().drawImage(testImg, 0, 0, Color.WHITE, null);	//komplett Weiss, faengt bei Pixel 0x0 an
+        String filename = input.getName();	        								//liest den aktuellen Dateinamen aus 
+        String zielFormat = null;
+        zielFormat = targetFormat.toLowerCase();									//ev. Grossschreibung raus
 
+		if (zielFormat.equals("jpeg"))											//falls Zielformat = jpeg -> Angabe zur Qualitaet hinzufuegen
+			outputFile = new File(output + "/" + filename + "-" + quality + "." + zielFormat);
+		else
+			outputFile = new File(output + "/" + filename + "." + zielFormat);
+    
+        //----------------------------------------------JPEG QUALITY ANFANG-------------------------------------
+        if(zielFormat.equals("jpeg")) {
+        	
+        	Iterator<ImageWriter> iterIW = ImageIO.getImageWritersByFormatName("jpeg");	//passenden Imagewriter holen -- "Returns an Iterator containing all currently registered ImageWriters that claim to be able to encode the named format"
+        	ImageWriter writerIW = (ImageWriter)iterIW.next();     						//naechstes Element im Iterator holen
+        	ImageWriteParam imagewriteparam = writerIW.getDefaultWriteParam();    	 	
+        	imagewriteparam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);    		//stellt Modus zur Qualitaetswahl bereit   	
+        	imagewriteparam.setCompressionQuality(quality); 							//Eigentliche Qualitaet festlegen (zw. 0 und 1)
+
+        	try {																				
+				FileImageOutputStream fioutStream = new FileImageOutputStream(outputFile);		//neuen Outputstream erstellen
+				writerIW.setOutput(fioutStream);												//den Outputstream fuer den Imagewriter einstellen
+				IIOImage neuesIIO = new IIOImage(testImg, null, null);							//neues IIOImage erstellen auf Basis des Eingabebildes
+				writerIW.write(null, neuesIIO, imagewriteparam);								//eigentlicher Schreibvorgang
+				writerIW.dispose();																//Writer wieder schließen
+			} catch (Exception e) { System.err.println( "Error writing outputFile: " + e.toString() ); }
+        	
+        	return outputFile;
+        }	// -------------------------------------JPEG QUALITY + WRITING ENDE----------------------------------
+        else
+			try {
+				ImageIO.write(leeresImage, zielFormat, outputFile);
+			} catch (Exception e) { System.err.println( "Error writing outputFile: " + e.toString() ); }
+       
         return outputFile;
     }
-    
-        
+     
     /**
         Main method. Parses the commandline parameters and prints usage information if required.
     */
@@ -129,8 +188,9 @@ public class ImageConverter {
         File fo = new File( args[1] );
         String targetFormat = args[2];
         float quality = 1.0f;
-        if ( args.length > 3 )
+        if ( args.length > 3 ) {
         	quality = Float.parseFloat( args[3] );
+        }
 
         System.out.println( "converting " + fi.getAbsolutePath() + " to " + fo.getAbsolutePath() );
         ImageConverter converter = new ImageConverter();

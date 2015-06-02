@@ -222,7 +222,7 @@ public class AudioThumbGenerator {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		args = new String[]{"./media/audio", "./test", "10"};
+		//args = new String[]{"./media/audio", "./test", "10"};
 		
 		if (args.length < 3) {
 			System.out
@@ -233,6 +233,8 @@ public class AudioThumbGenerator {
 		}
 		File fi = new File(args[0]);
 		File fo = new File(args[1]);
+
+		
 		Integer length = new Integer(args[2]);
 		AudioThumbGenerator audioThumb = new AudioThumbGenerator(length.intValue());
 		audioThumb.batchProcessAudioFiles(fi, fo);

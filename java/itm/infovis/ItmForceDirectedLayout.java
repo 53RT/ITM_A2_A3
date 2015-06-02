@@ -1,9 +1,9 @@
 package itm.infovis;
 
 /*******************************************************************************
-This file is part of the ITM course 2015
-(c) University of Vienna 2009-2015
-*******************************************************************************/
+ This file is part of the ITM course 2015
+ (c) University of Vienna 2009-2015
+ *******************************************************************************/
 
 import prefuse.action.layout.graph.ForceDirectedLayout;
 import prefuse.visual.EdgeItem;

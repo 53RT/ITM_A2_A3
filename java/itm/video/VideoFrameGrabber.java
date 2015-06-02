@@ -108,9 +108,10 @@ public class VideoFrameGrabber {
 
 		File outputFile = new File(output, input.getName() + "_thumb.jpg");
 		
-
+		//--ATTENTION-------------------------------------------------
 		//The following code segments are taken from the Xuggler Demo (DecodeAndCapureFrames) - Copyright (c) 2008, 2010 Xuggle Inc.  All rights reserved. 
-		//I think i cant do it better and i want to mark it as not my complete own work.
+		//I think i cant do it better and i want to mark it as not my complete own work. Same for the FrameExtract Function in the Thumbnail Generator Class
+		//---------------------------------------------------
 		
 		IContainer container = IContainer.make();
 		
@@ -249,10 +250,7 @@ public class VideoFrameGrabber {
 	      }
 	    }
 
-	    // Technically since we're exiting anyway, these will be cleaned up
-	    // by the garbage collector... but because we're nice people and
-	    // want to be invited places for Christmas, we're going to show how
-	    // to clean up.
+
 
 	    if (videoCoder != null)
 	    {
@@ -266,7 +264,7 @@ public class VideoFrameGrabber {
 	    }
 	 
 	 //Das mittlere Bild aller gespeicherten, vollstaendigen Bilder als auch das komplette Bild an mittlerer Zeitlicher Position lieferten das gleiche Ergebnis.
-	 //Aus diesem Grund wird fuer die Auswahl die weniger aufwaendigere Methode genutzt und das mittlerer Bild aller Bilder genutzt da von einer gleichmaeﬂigen
+	 //Aus diesem Grund wird fuer die Auswahl die weniger aufwaendigere Methode genutzt und das mittlerer Bild aller Bilder genutzt da von einer gleichmaessigen
 	 //Verteilung der kompletten Bilder im Stream ausgegangen wird sollte diese Methode auch immer zuverlaessig funktionieren.
 	    
 	 BufferedImage middlePicture = allPictures.get(allPictures.size()/2);
@@ -291,11 +289,6 @@ public class VideoFrameGrabber {
 		}
 		File fi = new File(args[0]);
 		File fo = new File(args[1]);
-
-		/*Nur zu Testzwecken
-		File fi = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\DREIZEHN.AVI");
-		File fo = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\");
-		*/
 		
 		VideoFrameGrabber grabber = new VideoFrameGrabber();
 		grabber.batchProcessVideoFiles(fi, fo);
