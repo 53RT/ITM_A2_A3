@@ -266,9 +266,16 @@ public class VideoFrameGrabber {
 	 //Das mittlere Bild aller gespeicherten, vollstaendigen Bilder als auch das komplette Bild an mittlerer Zeitlicher Position lieferten das gleiche Ergebnis.
 	 //Aus diesem Grund wird fuer die Auswahl die weniger aufwaendigere Methode genutzt und das mittlerer Bild aller Bilder genutzt da von einer gleichmaessigen
 	 //Verteilung der kompletten Bilder im Stream ausgegangen wird sollte diese Methode auch immer zuverlaessig funktionieren.
+	 
+
+	  System.out.println(allPictures.size());
+	  System.out.println(allPictures.size()/2);	    
 	    
 	 BufferedImage middlePicture = allPictures.get(allPictures.size()/2);
 	 ImageIO.write(middlePicture, "JPEG" , outputFile);
+	 
+	 //Für Stapelverarbeitung müssen die gespeicherten Bilder gelöscht werden da sonst alle Bilder aller Videos in der Liste landen
+	 allPictures.removeAll(allPictures);
 	    
 		return outputFile;
 
@@ -282,13 +289,22 @@ public class VideoFrameGrabber {
 
 		// args = new String[] { "./media/video", "./test" };
 
-		if (args.length < 2) {
+		/*if (args.length < 2) {
 			System.out.println("usage: java itm.video.VideoFrameGrabber <input-videoFile> <output-directory>");
 			System.out.println("usage: java itm.video.VideoFrameGrabber <input-directory> <output-directory>");
 			System.exit(1);
 		}
+		
+	
+		
+		
 		File fi = new File(args[0]);
 		File fo = new File(args[1]);
+	
+		*/
+		
+		File fi = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\");
+		File fo = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\");
 		
 		VideoFrameGrabber grabber = new VideoFrameGrabber();
 		grabber.batchProcessVideoFiles(fi, fo);

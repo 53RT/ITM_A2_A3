@@ -353,7 +353,14 @@ public class VideoThumbnailGenerator {
 		outWriter.flush();
 		outWriter.close();
 		
+		//Listen sollten noch geleert werden.
+		allPictures.removeAll(allPictures);
+		allPictures_Buff.removeAll(allPictures_Buff);
+		
+		
 		return outputFile;
+		
+		
 	}
 
 	/**
@@ -362,7 +369,7 @@ public class VideoThumbnailGenerator {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		if (args.length < 3) {
+		if (args.length < 2) {
             System.out.println("usage: java itm.video.VideoThumbnailGenerator <input-video> <output-directory> <timespan>");
             System.out.println("usage: java itm.video.VideoThumbnailGenerator <input-directory> <output-directory> <timespan>");
             System.exit(1);
