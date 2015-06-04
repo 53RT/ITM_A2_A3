@@ -230,6 +230,16 @@ public class VideoMetadataGenerator {
 	      // add video tag
 	      media.addTag("video");
 	      
+	      if(container != null){
+	    	  container.close();
+	      }
+	      if(videoCoder != null){
+	    	  videoCoder.close();
+	      }
+	      if(audioCoder != null){
+	    	  audioCoder.close();
+	      }
+	      
 		// write metadata
 
 	        FileWriter writer = new FileWriter(outputFile ,false);
