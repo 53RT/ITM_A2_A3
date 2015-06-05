@@ -178,16 +178,12 @@ public class VideoMetadataGenerator {
 		        if(videoStreamId != -1 && audioStreamId != -1)
 		        	break;
 		      }
-		      
 	    }
 		
 
 	    if (videoStreamId == -1)
 	      throw new RuntimeException("Es konnte kein Videostream in der Datei gefunden werden: "+ filepath);
 	    
-	    
-	    // Now we have found the video stream in this file.  Let's open up
-	    // our decoder so it can do work
 
 	    if (videoCoder.open() < 0)
 	      throw new RuntimeException(
@@ -230,16 +226,17 @@ public class VideoMetadataGenerator {
 	      // add video tag
 	      media.addTag("video");
 	      
-	      if(container != null){
-	    	  container.close();
-	      }
+	     
 	      if(videoCoder != null){
 	    	  videoCoder.close();
 	      }
 	      if(audioCoder != null){
 	    	  audioCoder.close();
 	      }
-	      
+	      if(container != null){
+	    	  container.close();
+	      }
+	   
 		// write metadata
 
 	        FileWriter writer = new FileWriter(outputFile ,false);

@@ -40,18 +40,89 @@
         // ***************************************************************
         
         // iterate over all available media objects
-        int c=2;
+       
+        //Extrahiere alle unterschiedlichen Tags aus den Media Dateien
+        //Die Unterscheidung braucht man eigentlich nicht.
+        int c=0;
         for ( AbstractMedia medium : media ) {
+            
+            ArrayList<String> imgTags = media.get(c).getTags();
+            	
+            for(int i = 0; i < imgTags.size();i++){
+            	if(!tagNodes.containsValue(imgTags.get(i))){
+            		tagNodes.put(String.valueOf(imgTags.get(i).hashCode()), imgTags.get(i));
+            	}
+           	}
+            	
+            //System.out.println("HABE " + tagNodes.size() + " TAGS GESPEICHERT!");
             c++;
-            if ( medium instanceof ImageMedia ) {
-                } else
-            if ( medium instanceof AudioMedia ) {
-                } else
-            if ( medium instanceof VideoMedia ) {
-                }
-
-            // create tag nodes (and respective edges) if not existing
             }
+        
+        	
+        	//Nachdem alle Tags extrahiert wurden können Nodes erstellt werden
+        	// Nodes der Tags
+        	int n = 1; // Da n0 schon der Root Node ist
+        	
+        	Enumeration<String> tags = tagNodes.elements();
+        	while(tags.hasMoreElements()){ //Alle unterschiedlichen Tags durchgehen
+        
+        		String tagName = tags.nextElement();
+        		%>
+        		<node id="n<%= tagName %>"> 
+      			<data key="type">concept</data>
+        		<data key="name"><%=tagName %></data>
+        		<data key="url">http://localhost:8080/itm/tags.jsp?tag=<%=tagName %></data>
+    			
+    			</node>
+    			<edge id="e<%=n%>" directed="true" source="n0" target="n<%=tagName%>"></edge>
+    			<%
+    			n++;
+        	}
+        	
+        	//Nodes der Media Dateien
+        	int m = 0;
+        	for ( AbstractMedia medium : media ) {
+				
+        		//Um die Dateien korrekt zu verlinken muss der Typ festgestellt werden.
+        		String dataTyp = null;
+        		if(medium instanceof ImageMedia ){
+        			dataTyp = "img";
+        		}
+        		else if (medium instanceof AudioMedia ){
+        			dataTyp = "audio";
+        		}
+				else if (medium instanceof VideoMedia ){
+        			dataTyp = "video";
+        		}
+        		
+        		%>
+        		<node id="m<%=m%>">
+      			<data key="type">node</data>
+        		<data key="name"><%=medium.getName().toString() %></data>
+        		<data key="url">http://localhost:8080/itm/media/<%= dataTyp %>/<%=medium.getName().toString() %></data>
+				
+				</node>
+				<%//Kante zu jedem Tag 
+				//Liste der Tags holen
+				ArrayList<String> actTags = medium.getTags();
+				
+				//Sonderfall wenn keine Tags vorhanden
+				
+				if(actTags.size() == 0){
+					%>
+					<edge id="e<%=m%>" directed="true" source="m<%=m %>" target="n0"></edge>
+					<%
+				}
+				else{
+				
+					for(int i = 0; i < actTags.size(); i++){
+					%>
+						<edge id="e<%=m + i%>" directed="true" source="m<%=m %>" target="n<%=actTags.get(i)%>"></edge>
+			    		<%
+					}
+				}
+        		m++;
+        	}
     %>
         
      

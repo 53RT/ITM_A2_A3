@@ -376,7 +376,7 @@ public class VideoThumbnailGenerator {
         File fo = new File(args[1]);
       
         
-        int timespan = 5;
+        int timespan = 2;
         if(args.length == 3)
             timespan = Integer.parseInt(args[2]);
         

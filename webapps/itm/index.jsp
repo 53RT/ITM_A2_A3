@@ -35,7 +35,10 @@
         <%
             // get the file paths - this is NOT good style (resources should be loaded via inputstreams...)
             // we use it here for the sake of simplicity.
-            String basePath = "webapps/itm/media";
+
+           //JB String basePath = "webapps/itm/media";
+            String basePath = "C:\\Users\\Gert\\workspace\\assignment2\\webapps\\itm\\media";
+            		
             if ( basePath == null )
                 throw new NullPointerException( "could not determine base path of media directory! please set manually in JSP file!" );
             File base = new File( basePath );
@@ -52,6 +55,7 @@
             // iterate over all available media objects
             for ( AbstractMedia medium : media ) {
                 c++;
+                System.out.println("Aktuelle Datei Nummer: " + c);
                 %>
                     <div style="width:300px;height:300px;padding:10px;float:left;">
                 <%
@@ -94,6 +98,7 @@
                 if ( medium instanceof AudioMedia ) {
                     // display audio thumbnail and metadata
                     AudioMedia audio = (AudioMedia) medium;
+                    System.out.println("DEBUG: AUDIO");
                     %>
                     <div style="width:200px;height:200px;padding:10px;">
                         <br/><br/><br/><br/>
@@ -105,7 +110,30 @@
                     </div>
                     <div>
                         Name: <%= audio.getName() %><br/>
-                        Duration: <%= audio.getDuration() %><br/>
+                        
+                        
+                        //Duration: <%= audio.getDuration() %><br/>
+                        
+                        <div id="spoilerID<%=c %>" style="display:none">          <!-- jedes Spoiler-Element kriegt eine eigene durchnummerierte ID -->
+                      	Size: <%=audio.getSize() %> <br/>
+						Tags: <%=audio.getTags() %> <br/>
+						Encoding: <%=audio.getEncoding() %> <br/>
+						Duration: <%=audio.getDuration() %> <br/>
+						Author: <%=audio.getAuthor() %> <br/>
+						Title: <%=audio.getTitle() %> <br/>
+						Date: <%=audio.getDate() %> <br/>
+						Comment: <%=audio.getComment() %> <br/>
+						Album: <%=audio.getAlbum() %> <br/>
+						Track: <%=audio.getTrack() %> <br/>
+						Composer: <%=audio.getComposer() %> <br/>
+						Genre: <%=audio.getGenre() %> <br/>
+						Frequency: <%=audio.getFrequency() %> <br/>
+						Bitrate: <%=audio.getBitrate() %> <br/>
+						Channels: <%=audio.getChannels() %> <br/>
+                    </div>
+                    <button title="Metadaten anzeigen" type="button" onclick="if(document.getElementById('spoilerID<%=c %>') .style.display=='none') {document.getElementById('spoilerID<%=c %>') .style.display=''}else{document.getElementById('spoilerID<%=c %>') .style.display='none'}">Metadaten anzeigen</button> <br/>
+                        
+                        
                         Tags: <% for ( String t : audio.getTags() ) { %><a href="tags.jsp?tag=<%= t %>"><%= t %></a> <% } %><br/>
                     </div>
                     <%  
@@ -113,6 +141,8 @@
                 if ( medium instanceof VideoMedia ) {
                     // handle videos thumbnail and metadata...
                     VideoMedia video = (VideoMedia) medium;
+                    System.out.println("DEBUG: Hier ist ein Video");
+                    
                     %>
                     <div style="width:200px;height:200px;padding:10px;">
                         <a href="media/video/<%= video.getInstance().getName()%>">
@@ -127,6 +157,27 @@
                     </div>
                     <div>
                         Name: <a href="media/video/<%= video.getInstance().getName()%>"><%= video.getName() %></a><br/>
+                        
+                        <div id="spoilerID<%=c %>" style="display:none">          <!-- jedes Spoiler-Element kriegt eine eigene durchnummerierte ID -->
+                      	
+						Size: <%=video.getSize() %> </br>
+						Video Codec: <%=video.getVideoCodecName() %> </br>
+						Video CodecID: <%=video.getVideoCodecID() %> </br>
+						Video Framerate: <%=video.getVideoFrameRate() %> </br>
+						Video Length: <%=video.getVideoLenght() %> </br>
+						Video Height: <%=video.getVideoHeight() %> </br>
+						Video Width: <%=video.getVideoWidth() %> </br>
+						</br>
+						Audio Codec: <%=video.getAudioCodecName() %> </br>
+						Audio CodecID: <%=video.getAudioCodecID() %> </br>
+						Audio Channels: <%=video.getAudioNumChannels() %> </br>
+						Audio Samplerate: <%=video.getAudioSampleRate() %> </br>
+						Audio Bitrate: <%=video.getAudioBitRate() %> </br>
+						
+                    </div>
+                    <button title="Metadaten anzeigen" type="button" onclick="if(document.getElementById('spoilerID<%=c %>') .style.display=='none') {document.getElementById('spoilerID<%=c %>') .style.display=''}else{document.getElementById('spoilerID<%=c %>') .style.display='none'}">Metadaten anzeigen</button> <br/>
+                      
+                        
                         Tags: <% for ( String t : video.getTags() ) { %><a href="tags.jsp?tag=<%= t %>"><%= t %></a> <% } %><br/>
                     </div>
                     <%  

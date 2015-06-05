@@ -289,7 +289,7 @@ public class VideoFrameGrabber {
 
 		// args = new String[] { "./media/video", "./test" };
 
-		/*if (args.length < 2) {
+		if (args.length < 2) {
 			System.out.println("usage: java itm.video.VideoFrameGrabber <input-videoFile> <output-directory>");
 			System.out.println("usage: java itm.video.VideoFrameGrabber <input-directory> <output-directory>");
 			System.exit(1);
@@ -301,11 +301,7 @@ public class VideoFrameGrabber {
 		File fi = new File(args[0]);
 		File fo = new File(args[1]);
 	
-		*/
-		
-		File fi = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\");
-		File fo = new File("C:\\Users\\Gert\\workspace\\assignment2\\media\\video\\");
-		
+
 		VideoFrameGrabber grabber = new VideoFrameGrabber();
 		grabber.batchProcessVideoFiles(fi, fo);
 	}
