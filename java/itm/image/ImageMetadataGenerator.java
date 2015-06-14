@@ -9,6 +9,7 @@ import itm.model.AbstractMedia;
 import itm.model.ImageMedia;
 import itm.model.MediaFactory;
 
+import java.awt.Color;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -16,6 +17,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+
+import com.sun.imageio.plugins.common.ImageUtil;
 
 //import sun.org.mozilla.javascript.internal.ast.WithStatement; //War plötzlich nicht mehr ok für ant!!!
 
@@ -145,9 +148,73 @@ public class ImageMetadataGenerator
 
         // add a tag "image" to the media
         
-        media.addTag("image");       
+        media.addTag("image");      
+        
+        // tags fuer Task 3.3 hinzufuegen - Vorgehen zunächst aehnlich wie in ImageHistogramGenerator
+        
+        Color farbe = new Color(0);
+        ColorSpace colorSpaceType = testImg.getColorModel().getColorSpace();
+        int colorSpaceTypeInt = colorSpaceType.getType();
+        int bins = 256;
+        int groesse = testImg.getWidth() * testImg.getHeight();
+       
+		int rotwert = 0;
+		int gruenwert = 0; 
+		int blauwert = 0; ;
+		
+		int rot = 0; int gruen = 0; int blau = 0; 
+		int schwarzgrau = 0; int weiss = 0;
+		
+        for (int x = 0; x < testImg.getWidth(); x++ ) {				//einmal ueber das Bild druebergehen
+        	for (int y = 0; y < testImg.getHeight(); y++) {
+	        	farbe = new Color (testImg.getRGB(x, y));
+	        	rotwert = farbe.getRed();							//Farbwerte extrahieren
+	        	gruenwert = farbe.getGreen();
+	        	blauwert = farbe.getBlue();
+	        	        	
+	        	if(((rotwert < 50) && (gruenwert < 50) && (blauwert < 50)) ||
+	        		(Math.abs(rotwert - gruenwert) < 20) && (Math.abs(rotwert - blauwert) < 20) && (Math.abs(gruenwert - blauwert) < 20)) {
+	        		schwarzgrau++;
+	        		continue;
+	        	}
+	        	if((rotwert > 180) && (gruenwert > 180) && (blauwert > 180)) {
+	        		weiss++;
+	        		continue;
+	        	}	        	
+	        	if(rotwert > (gruenwert + blauwert)) {
+	        		rot++;
+	        	}
+	        	if(gruenwert > (rotwert + blauwert)) {
+	        		gruen++;
+	        	}
+	        	if(blauwert > (rotwert + gruenwert)) {
+	        		blau++;
+	        	}
+        	}
+        }
+        
+        double doublerot = rot;
+        double doublegruen = gruen;
+        double doubleblau = blau;
+        
+        if((doublerot / (groesse - schwarzgrau - weiss)) > 0.2)
+        	media.addTag("red");
+        
+        if((doublegruen / (groesse - schwarzgrau - weiss)) > 0.2)
+        	media.addTag("green");
+        
+        if((doubleblau / (groesse - schwarzgrau - weiss)) > 0.2)
+        	media.addTag("blue");
+        
+        System.out.println("pixelanzahl: " + groesse);                //DEBUG
+        System.out.println("rot: " + rot);
+        System.out.println("gruen: " + gruen);
+        System.out.println("blau: " + blau);
+        System.out.println("schwarzgrau: " + schwarzgrau);
+        System.out.println("weiss: " + weiss);
+        
 
-        // add a tag corresponding to the filename extension of the file to the media 
+        // add a tag corresponding t the filename extension of the file to the media 
         
         String dateiname = null;
         dateiname = input.getName();					//Dateiname auslesen
@@ -170,8 +237,8 @@ public class ImageMetadataGenerator
         // if there is a colormodel:
         // set color space type.at
         
-        ColorSpace colorSpaceType = testImg.getColorModel().getColorSpace();	//Colorspace auslesen
-        int colorSpaceTypeInt = colorSpaceType.getType();						//in Integer umwandeln
+        //ColorSpace colorSpaceType = testImg.getColorModel().getColorSpace();	//Colorspace auslesen
+        //int colorSpaceTypeInt = colorSpaceType.getType();						//in Integer umwandeln
         media.setColorSpaceType(colorSpaceTypeInt);								//und setzen
          	
         // set pixel size

@@ -11,8 +11,29 @@
  *******************************************************************************/
 -->
 <html>
-    <head>
-    
+    <head>    
+    <!-- Bootstrap -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <link rel="icon" href="favicon.ico">
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="cover.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<script
 	language="JavaScript">
 	<!--
@@ -25,19 +46,28 @@
 	//-->
 	</script>
     
-    
     </head>
     <body>
         <h1>Welcome to the ITM media library</h1>
-        <a href="infovis.jsp">infovis</a>
-         
+
+          <div class="masthead clearfix">
+            <div class="inner">
+              
+              <nav>
+                <ul class="nav masthead-nav">
+                  <li class="active"><a href="infovis.jsp"><span class="glyphicon glyphicon-resize-full" aria-hidden="true"></span> got to infovis</a>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
         
         <%
             // get the file paths - this is NOT good style (resources should be loaded via inputstreams...)
             // we use it here for the sake of simplicity.
 
-           //JB String basePath = "webapps/itm/media";
-            String basePath = "C:\\Users\\Gert\\workspace\\assignment2\\webapps\\itm\\media";
+            String basePath = "webapps/itm/media";
+            //String basePath = "C:\\Users\\Gert\\workspace\\assignment2\\webapps\\itm\\media";
             		
             if ( basePath == null )
                 throw new NullPointerException( "could not determine base path of media directory! please set manually in JSP file!" );
@@ -57,7 +87,7 @@
                 c++;
                 System.out.println("Aktuelle Datei Nummer: " + c);
                 %>
-                    <div style="width:300px;height:300px;padding:10px;float:left;">
+                    <div style="width:300px;height:460px;padding:10px;float:left;" class="jumbotron">
                 <%
             
                 // handle images
@@ -71,14 +101,14 @@
                     // display image thumbnail and metadata
                     ImageMedia img = (ImageMedia) medium;
                     %>
-                    <div style="width:200px;height:200px;padding:10px;">
+                    <div style="width:200px;height:210px;padding:10px;  ">
                         <a href="media/img/<%= img.getInstance().getName()%>">
                                                                             <!-- mouseover hinzugefuegt / Histo-Thumbs dafuer werden beim init() bzw. loadmedia() in MediaFactory erzeugt -->
                         <img src="media/md/<%= img.getInstance().getName() %>.thumb.png" border="0" onmouseover="this.src='media/md/<%= img.getInstance().getName() %>.hist.png.thumb.png'" onmouseout="this.src='media/md/<%= img.getInstance().getName() %>.thumb.png'" />
                         </a>
                     </div>
-                    <div>
-                        Name: <%= img.getName() %><br/>
+                    <div style="font-weight:bold">
+                        Name: <%= img.getName() %><br/></div>
 
                     <div id="spoilerID<%=c %>" style="display:none">          <!-- jedes Spoiler-Element kriegt eine eigene durchnummerierte ID -->
                         Dimensions: <%= img.getWidth() %>x<%= img.getHeight() %>px<br/>
@@ -89,7 +119,7 @@
                         Orientation: <%= img.getOrientation() %> <br/>
                         ColorSpaceType: <%= img.getColorSpaceType() %> <br/>
                     </div>
-                    <button title="Metadaten anzeigen" type="button" onclick="if(document.getElementById('spoilerID<%=c %>') .style.display=='none') {document.getElementById('spoilerID<%=c %>') .style.display=''}else{document.getElementById('spoilerID<%=c %>') .style.display='none'}">Metadaten anzeigen</button> <br/>
+                    <button title="Metadaten anzeigen" type="button" onclick="if(document.getElementById('spoilerID<%=c %>') .style.display=='none') {document.getElementById('spoilerID<%=c %>') .style.display=''}else{document.getElementById('spoilerID<%=c %>') .style.display='none'}">Metadaten auf/zuklappen</button> <br/>
   
                         Tags: <% for ( String t : img.getTags() ) { %><a href="tags.jsp?tag=<%= t %>"><%= t %></a> <% } %><br/>
                     </div>
@@ -111,9 +141,7 @@
                     <div>
                         Name: <%= audio.getName() %><br/>
                         
-                        
-                        //Duration: <%= audio.getDuration() %><br/>
-                        
+                                                
                         <div id="spoilerID<%=c %>" style="display:none">          <!-- jedes Spoiler-Element kriegt eine eigene durchnummerierte ID -->
                       	Size: <%=audio.getSize() %> <br/>
 						Tags: <%=audio.getTags() %> <br/>
@@ -167,7 +195,7 @@
 						Video Length: <%=video.getVideoLenght() %> </br>
 						Video Height: <%=video.getVideoHeight() %> </br>
 						Video Width: <%=video.getVideoWidth() %> </br>
-						</br>
+						----------------------------------------------------
 						Audio Codec: <%=video.getAudioCodecName() %> </br>
 						Audio CodecID: <%=video.getAudioCodecID() %> </br>
 						Audio Channels: <%=video.getAudioNumChannels() %> </br>
@@ -197,7 +225,13 @@
                 
         %>
      
-        
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="fjs/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
         
     </body>
 </html>
