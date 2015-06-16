@@ -33,31 +33,60 @@
     die am Mouse-Over-Effekt beteiligt sind */
     //-->
     </script>
+    <title>ITM Infovis</title>
+    
     </head>
     <body>
-        <h1>ITM Infovis</h1>
+ 
+ 	<!-- top navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    
+		<div class="row" >
+			
+		<div class="col-lg-3 col-sm-3 col-xs-3" ></div>		
+		<div class="col-lg-2 col-sm-2 col-xs-2" >	
+           <a class="navbar-brand" href="/itm/infovis.jsp">ITM Infovis</a>
+        </div>
+        <div class="col-lg-1 col-sm-1 col-xs-1" >
+           <a class="navbar-brand" href="/itm/tags.jsp?tag=image" style="font-size: 100%"><span class="glyphicon glyphicon-camera"></span>  Image</a>
+        </div>
+        <div class="col-lg-1 col-sm-1 col-xs-1" >
+           <a class="navbar-brand" href="/itm/tags.jsp?tag=audio" style="font-size: 100%"><span class="glyphicon glyphicon-headphones"></span>  Audio</a>
+        </div>
+        <div class="col-lg-1 col-sm-1 col-xs-1" >
+           <a class="navbar-brand" href="/itm/tags.jsp?tag=video" style="font-size: 100%"><span class="glyphicon glyphicon-film"></span>  Video</a>
+        </div>
+        <div class="col-lg-1 col-sm-1 col-xs-1" >
+           <a class="navbar-brand" href="/itm/index.jsp" style="font-size: 100%"style="font-size: 100%"><span class="glyphicon glyphicon-home"></span>  Home</a>
+        </div>
+        <div class="col-lg-3 col-sm-3 col-xs-3" ><h6 align="right" style="margin-right: 30px">by J. Busching & G. Sluiter</h6></div>
         
-        <div class="masthead clearfix">
-            <div class="inner">
-              
-              <nav>
-                <ul class="nav masthead-nav">
-                  <li class="active"><a href="index.jsp"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> go back</a>      
-                </ul>
-              </nav>
-            </div>
-          </div>
-
-        <applet code="itm.infovis.ItmApplet" 
-                archive="infovis/prefuse.jar,infovis/itm.jar" 
-                width="900" 
-                height="680">
-        </applet>   
-        <p>
-            Zoom by right-click &amp; drag.<br/>
-            Pan by left-click &amp; drag.<br/>
-            Doubleclick to navigate to item<br/>
-        </p>
+       </div>
+    </div>
+ 
+	<!-- Reihe umfasst alle Media Elemente -->
+            <div class="row" style="display:block; margin-left:auto; margin-right:auto; width: 13vm; padding-top: 10%; padding-bottom: 10%; " > 
+            	<div class="row" style="background-color: FFFFFF">
+            
+			        <applet code="itm.infovis.ItmApplet" 
+			                archive="infovis/prefuse.jar,infovis/itm.jar" 
+			                width="900" 
+			                height="680">
+			        </applet>   
+        		</div>
+	        	<div class="row"  style="background-color: FFFFFF">
+	        	
+	        	<p style="margin-left: 15px; color: 555555">
+	           	 	<span class="glyphicon glyphicon-zoom-in"></span>  Zoom by right-click &amp; drag.<br>
+	            	<span class="glyphicon glyphicon-move"></span>  Pan by left-click &amp; drag.<br>
+	            	<span class="glyphicon glyphicon-hand-up"></span>  Doubleclick to navigate to item<br>
+	       		</p>
+	        	
+	        	</div>
+        
+        </div>
+        
+        
 
             <!-- Bootstrap core JavaScript
     ================================================== -->

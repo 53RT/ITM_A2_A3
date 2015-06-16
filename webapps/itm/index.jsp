@@ -29,50 +29,32 @@
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
     <script src="js/ie-emulation-modes-warning.js"></script>
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	<script
-	language="JavaScript">
-	<!--
-	thumbONE= new Image();
-	thumbONE.src = "knopf.jpg"
-	button2= new Image();
-	button2.src = "email.jpg"
-	/* usw. für alle Grafiken,
-	die am Mouse-Over-Effekt beteiligt sind */
-	//-->
-	</script>
-    
+	<title>ITM Media Library</title>
     </head>
     <body>
 
-
-
-<!-- top navbar -->
+	<!-- top navbar -->
     <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     
 		<div class="row" >
 			
 		<div class="col-lg-3 col-sm-3 col-xs-3" ></div>		
 		<div class="col-lg-2 col-sm-2 col-xs-2" >	
-           <a class="navbar-brand" href="#">ITM Media Library</a>
+           <a class="navbar-brand" href="/itm/index.jsp">ITM Media Library</a>
         </div>
         <div class="col-lg-1 col-sm-1 col-xs-1" >
-           <a class="navbar-brand" href="/itm/tags.jsp?tag=image"><span class="glyphicon glyphicon-camera"></span>  Image</a>
+           <a class="navbar-brand" href="/itm/tags.jsp?tag=image" style="font-size: 100%"><span class="glyphicon glyphicon-camera"></span>  Image</a>
         </div>
         <div class="col-lg-1 col-sm-1 col-xs-1" >
-           <a class="navbar-brand" href="/itm/tags.jsp?tag=audio"><span class="glyphicon glyphicon-headphones"></span>  Audio</a>
+           <a class="navbar-brand" href="/itm/tags.jsp?tag=audio" style="font-size: 100%"><span class="glyphicon glyphicon-headphones"></span>  Audio</a>
         </div>
         <div class="col-lg-1 col-sm-1 col-xs-1" >
-           <a class="navbar-brand" href="/itm/tags.jsp?tag=video"><span class="glyphicon glyphicon-film"></span>  Video</a>
+           <a class="navbar-brand" href="/itm/tags.jsp?tag=video" style="font-size: 100%"><span class="glyphicon glyphicon-film"></span>  Video</a>
         </div>
         <div class="col-lg-1 col-sm-1 col-xs-1" >
-           <a class="navbar-brand" href="/itm/infovis.jsp"><span class="glyphicon glyphicon-modal-window"></span>  Infovis</a>
+           <a class="navbar-brand" href="/itm/infovis.jsp" style="font-size: 100%"style="font-size: 100%"><span class="glyphicon glyphicon-modal-window"></span>  Infovis</a>
         </div>
-        <div class="col-lg-3 col-sm-3 col-xs-3" ></div>
+        <div class="col-lg-3 col-sm-3 col-xs-3" ><h6 align="right" style="margin-right: 30px">by J. Busching & G. Sluiter</h6></div>
         
        </div>
     </div>
@@ -80,7 +62,7 @@
         <%
             // get the file paths - this is NOT good style (resources should be loaded via inputstreams...)
             // we use it here for the sake of simplicity.
-			//TODO Ladebildschirm anzeigen
+
             
             //String basePath = "webapps/itm/media";
             String basePath = "C:\\Users\\Gert\\workspace\\assignment2\\webapps\\itm\\media";
@@ -97,19 +79,15 @@
             // get all media objects
             ArrayList<AbstractMedia> media = MediaFactory.getMedia();
             
-            int c=0; // counter for rowbreak after 3 thumbnails.
-            // iterate over all available media objects
+           
             %>
             <!-- Reihe umfasst alle Media Elemente -->
             <div class="row" style="display:block; margin-left:auto; margin-right:auto; width: 13vm; padding-top: 10%; padding-bottom: 10%;" > 
             <% 
             
             for ( AbstractMedia medium : media ) {
-                c++;
-                System.out.println("Aktuelle Datei Nummer: " + c);
                 %>
                 	<div class="col-lg-3 col-sm-4 col-xs-6" style="background-color: FFFFFF; width: 23%; height: 23%; padding-left: 2%; padding-right: 2%; padding-top: 2%; padding-bottom: 25%;">
-                    <!-- <div style="width:300px;height:460px;padding:10px;float:left;" class="jumbotron">  -->
                 <%
             
                 //Handle IMAGES
@@ -133,9 +111,7 @@
                 		
                 //Handle AUDIO		
                 if ( medium instanceof AudioMedia ) {
-                	
                     AudioMedia audio = (AudioMedia) medium;
-                    System.out.println("DEBUG: AUDIO");
                     
                     //String beeinhaltet die Metadaten und wird über JavaScript in der Lightbox eingefügt
                 	String metaData = "<b>Name: </b>" + audio.getName() + "<br> Size : " + audio.getSize() + " Byte <br> Encoding: " + audio.getEncoding() + " <br>Duration: " + audio.getDuration() + "ms <br> Author: " + audio.getAuthor() + "<br>Title: " + audio.getTitle() + "<br>Date: " + audio.getDate() + "<br>Comment: " + audio.getComment() + "<br>Album: " + audio.getAlbum() + "<br>Track: " + audio.getTrack() + "<br>Composer: " + audio.getComposer() + "<br>Genre: " + audio.getGenre() + "<br>Frequency: " + audio.getFrequency() +  "<br>Bitrate: " + audio.getBitrate() + "<br/>Channels: " + audio.getChannels() + "<br/>";
@@ -156,12 +132,11 @@
 						<br>
                     <%  
                     } else
-                    	//Handle VIDEOS
+                    	
+                //Handle VIDEOS
                 if ( medium instanceof VideoMedia ) {
-                    // handle videos thumbnail and metadata...
                     VideoMedia video = (VideoMedia) medium;
-                    System.out.println("DEBUG: Hier ist ein Video");
-                    
+
                     String metaData = "<b>Size: </b>" + video.getSize() + "Byte <br><b>Video Codec: </b>" + video.getVideoCodecName() + "<br><b>Video CodecID: </b>" + video.getVideoCodecID() + " <br><b>Video Framerate: </b>" + video.getVideoFrameRate() + "<br><b>Video Length: </b>" + video.getVideoLenght() + " sec <br><b>Video Height: </b>" + video.getVideoHeight() + " px<br><b>Video Width: </b>" + video.getVideoWidth() + " px <hr><b>Audio Codec: </b>" + video.getAudioCodecName() + "<br><b>Audio CodecID: </b>" + video.getAudioCodecID() + "<br><b>Audio Channels: </b>" + video.getAudioNumChannels() + "<br><b>Audio Samplerate: </b>"+ video.getAudioSampleRate() + "<br><b>Audio Bitrate: </b>" + video.getAudioBitRate() + "<br>";
                     %>
                     
@@ -183,22 +158,8 @@
                     <%}%>
                 		</div><!-- COLUMN -->
           <%}%>
+          
      		</div><!--  ROW  -->
-
-
-		   <!--Bottom Footer -->
-    	<div class="navbar navbar-default navbar-fixed-bottom" role="navigation" style="width:auto; display:block; margin-left:auto; margin-right:auto;">
-			<div class="row" >
-			
-				<div class="col-lg-3 col-sm-3 col-xs-3" ></div>		
-				<div class="col-lg-2 col-sm-2 col-xs-2" ><h6> (c) 2015 </h6></div>
-        		<div class="col-lg-3 col-sm-3 col-xs-3" ></div>
-        		<div class="col-lg-2 col-sm-2 col-xs-2" ><h6>by J. Busching & G. Sluiter</h6></div>
-        		<div class="col-lg-3 col-sm-3 col-xs-3" ></div>
-        
-       		</div>
-    	</div>
-
 
 
 	<!-- Lightbox für Bilder -->
