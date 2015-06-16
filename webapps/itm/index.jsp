@@ -64,8 +64,8 @@
             // we use it here for the sake of simplicity.
 
             
-            //String basePath = "webapps/itm/media";
-            String basePath = "C:\\Users\\Gert\\workspace\\assignment2\\webapps\\itm\\media";
+            String basePath = "webapps/itm/media";
+            //String basePath = "C:\\Users\\Gert\\workspace\\assignment2\\webapps\\itm\\media";
             		
             if ( basePath == null )
                 throw new NullPointerException( "could not determine base path of media directory! please set manually in JSP file!" );
@@ -94,12 +94,34 @@
                 if ( medium instanceof ImageMedia ) {                    
                     ImageMedia img = (ImageMedia) medium;
 
+                    String readableOrientation = "landscape";                   //Bildattribute in gut lesbares Format umwandeln
+                    if (img.getOrientation() == 1)  
+                        readableOrientation = "portrait";
+
+                    String readableTransparency = "no";
+                    if(img.getTransparency() == 0)
+                        readableTransparency = "yes";
+
+                    String readableColorSpaceType = "no data";                      
+                    switch ( img.getColorSpaceType() ) {
+                        case 1: readableColorSpaceType = "CS_CIEXYZ"; break;
+                        case 2: readableColorSpaceType = "CS_GRAY"; break;
+                        case 3: readableColorSpaceType = "CS_LINEAR_RGB"; break;
+                        case 4: readableColorSpaceType = "CS_PYCC"; break;
+                        case 5: readableColorSpaceType = "CS_sRGB"; break;
+                        case 6: readableColorSpaceType = "TYPE_CMY"; break;
+                        case 7: readableColorSpaceType = "TYPE_CMYK"; break;
+                        case 8: readableColorSpaceType = "TYPE_GRAY"; break;
+                        case 9: readableColorSpaceType = "TYPE_RGB"; break;
+                        case 10: readableColorSpaceType = "TYPE_HLS"; break;
+                    }                
+
                 	//String beeinhaltet die Metadaten und wird über JavaScript in der Lightbox eingefügt
-                	String metaData = "<b>Name: </b>" + img.getName() + " <br>" +"<b>Dimensions: </b>" + img.getWidth() + " x " + img.getHeight() + " px <br> <b>PixelSize: </b>" + img.getPixelSize() + " + <br> <b>Number Components: </b>" + img.getNumComponents() + " <br> <b>Number ColorComponents: </b>" + img.getNumColorComponents() + " <br> <b>Transparency: </b>" + img.getTransparency() + " <br> <b>Orientation: </b>" +  img.getOrientation() + " <br><b>ColorSpaceType: </b>" + img.getColorSpaceType() + "<br/>";
+                	String metaData = "<b>Name: </b>" + img.getName() + " <br>" +"<b>Dimensions: </b>" + img.getWidth() + " x " + img.getHeight() + " px <br> <b>PixelSize: </b>" + img.getPixelSize() + " + <br> <b>Number of Components: </b>" + img.getNumComponents() + " <br> <b>Number of ColorComponents: </b>" + img.getNumColorComponents() + " <br> <b>Transparency: </b>" + readableTransparency + " <br> <b>Orientation: </b>" + readableOrientation + " <br><b>ColorSpaceType: </b>" + readableColorSpaceType + "<br/>";
                     %> 
                 	
                 	<li style="list-style: none">
-                       	<a href="#" temp="<%=metaData %>" fileName="<%= img.getName()%>"><img class="img-thumbnail" title="bla" src="media/md/<%=img.getInstance().getName()%>.thumb.png" border="0" onmouseover="this.src='media/md/<%= img.getInstance().getName() %>.hist.png.thumb.png'" onmouseout="this.src='media/md/<%= img.getInstance().getName() %>.thumb.png'" /></a>
+                       	<a href="#" temp="<%=metaData %>" fileName="<%= img.getName()%>"><img class="img-thumbnail" title="" src="media/md/<%=img.getInstance().getName()%>.thumb.png" border="0" onmouseover="this.src='media/md/<%= img.getInstance().getName() %>.hist.png.thumb.png'" onmouseout="this.src='media/md/<%= img.getInstance().getName() %>.thumb.png'" /></a>
                     </li>
                       
                     <nobr style="color:555555"><b>Name: </b><%= img.getName()%></nobr>
@@ -110,18 +132,41 @@
                 	} else
                 		
                 //Handle AUDIO		
-                if ( medium instanceof AudioMedia ) {
+                if ( medium instanceof AudioMedia ) {                       
                     AudioMedia audio = (AudioMedia) medium;
+                                                                                    //Bildattribute in gut lesbares Format umwandeln
+                    int mili = (int) ((Long) audio.getDuration() / 1000);             //Duration in microsec wird umgerechnet
+                    int min = (mili / 1000) / 60; 
+                    int sec = (mili / 1000) % 60;
+                    String readableDuration;
+                    
+                    String secString = Integer.toString(sec);                   //Sekunden in String konvertiert
+                    if (sec < 10) {                                             
+                        StringBuilder sb = new StringBuilder(secString);        
+                        sb.insert(0, "0");                                      //bei einstelligen Werten wird 0 am Anfang hinzugefuegt
+                        secString = sb.toString();
+                    }     
+                    readableDuration = min + ":" + secString;
+
+                    int kiloBitrate = 0; String stringKiloBitrate = "No data";
+                    if (audio.getBitrate() >= 1000) {
+                        kiloBitrate = audio.getBitrate() / 1000;
+                        stringKiloBitrate = "" + kiloBitrate + " kbit/s";
+                    }
+
+                    int readableSize = (int) audio.getSize();
+                    if (readableSize > 1000)
+                        readableSize /= 1000;
                     
                     //String beeinhaltet die Metadaten und wird über JavaScript in der Lightbox eingefügt
-                	String metaData = "<b>Name: </b>" + audio.getName() + "<br> Size : " + audio.getSize() + " Byte <br> Encoding: " + audio.getEncoding() + " <br>Duration: " + audio.getDuration() + "ms <br> Author: " + audio.getAuthor() + "<br>Title: " + audio.getTitle() + "<br>Date: " + audio.getDate() + "<br>Comment: " + audio.getComment() + "<br>Album: " + audio.getAlbum() + "<br>Track: " + audio.getTrack() + "<br>Composer: " + audio.getComposer() + "<br>Genre: " + audio.getGenre() + "<br>Frequency: " + audio.getFrequency() +  "<br>Bitrate: " + audio.getBitrate() + "<br/>Channels: " + audio.getChannels() + "<br/>";
+                	String metaData = "<b>Name: </b>" + audio.getName() + "<br> <b>Size : </b>" + readableSize + " Kb" + " (" + audio.getSize() + " Byte) <br> <b>Encoding: </b>" + audio.getEncoding() + " <br><b>Duration: </b>" + readableDuration + " min <br> <b>Author: </b>" + audio.getAuthor() + "<br><b>Title: </b>" + audio.getTitle() + "<br><b>Date: </b>" + audio.getDate() + "<br><b>Comment: </b>" + audio.getComment() + "<br><b>Album: </b>" + audio.getAlbum() + "<br><b>Track: </b>" + audio.getTrack() + "<br><b>Composer: </b>" + audio.getComposer() + "<br><b>Genre: </b>" + audio.getGenre() + "<br><b>Frequency: </b>" + audio.getFrequency() + " Hz" + "<br><b>Bitrate: </b>" + stringKiloBitrate + "<br/><b>Channels: </b>" + audio.getChannels() + "<br/>";
                     %> 
                 	
                 	<li style="list-style: none" class="img-thumbnail">
                        	<p style="font-size: 7em"><a href="#" temp="<%=metaData %>" fileName="<%= audio.getName()%>" class="audioThumb" style="width:150px; height: 150px;"><span class="glyphicon glyphicon-music" style="color: 555555;"></span></a></p>
 	                
 						<audio controls style="max-width:150px">
-					  		<source src="media/audio/<%=audio.getInstance().getName()%>" type="audio/mpeg">
+					  		<source src="media/audio/<%=audio.getInstance().getName()%>" type="audio/wav">
 							Your browser does not support the audio element.
 						</audio>
                 	</li>

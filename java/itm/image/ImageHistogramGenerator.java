@@ -159,8 +159,15 @@ public class ImageHistogramGenerator
 		
 		// plot the histogram, try different dimensions for better visualization
         
-        BufferedImage histogrammImage = aktHistogramm.plotHistogram(200, 200);		//es bietet sich eine Vielzahl von 256 an
-		
+        BufferedImage histogrammImage = null;
+        
+        if (testImg.getWidth() < 200 && testImg.getHeight() < 100)
+        	histogrammImage = aktHistogramm.plotHistogram(200, 100);									//canvas-groesse    	
+        else if (testImg.getHeight() < testImg.getWidth())        
+        	histogrammImage = aktHistogramm.plotHistogram(testImg.getWidth(), testImg.getHeight());		//falls != Landscape-Mode, Histogramm nicht um 90° gedreht
+        else
+        	histogrammImage = aktHistogramm.plotHistogram(testImg.getHeight(), testImg.getWidth());		//gleiche groesse fuer Mouseover-Effekt
+        		
         // encode and save the image as png
         
     	try {

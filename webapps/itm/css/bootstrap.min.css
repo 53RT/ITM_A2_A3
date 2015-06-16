@@ -1061,6 +1061,24 @@ body {
     width: 900px; 
 	margin: 0 auto;
 }
+.imagebackground{
+	background: url("image.jpg") no-repeat center center fixed;
+}
+.audiobackground{
+	background: url("cassettes.jpg") no-repeat center center fixed;
+}
+.videobackground{
+	background: url("cam.jpg") no-repeat center center fixed;
+}
+.redbackground{
+	background: url("red.jpg") no-repeat center center fixed;
+}
+.greenbackground{
+	background: url("green.jpg") no-repeat center center fixed;
+}
+.bluebackground{
+	background: url("blue.jpg") no-repeat center center fixed;
+}
 input, button, select, textarea {
     font-family: inherit;
     font-size: inherit;

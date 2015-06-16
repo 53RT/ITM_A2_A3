@@ -21,16 +21,16 @@ public class AudioMedia extends AbstractMedia {
 	// Fill in your code here!
 	// ***************************************************************
 
-	String encoding = "Keine Informationen vorhanden";			//Defaultwerte, falls keine Informationen im File enthalten
+	String encoding = "No data";			//Defaultwerte, falls keine Informationen im File enthalten
     Long duration = (long) 0;
-    String author = "Keine Informationen vorhanden";
-    String title = "Keine Informationen vorhanden";
-    String date = "Keine Informationen vorhanden";;
-    String comment = "Keine Informationen vorhanden";
-    String album = "Keine Informationen vorhanden";
-    String track = "Keine Informationen vorhanden";
-    String composer = "Keine Informationen vorhanden";
-    String genre =  "Keine Informationen vorhanden";
+    String author = "No data";
+    String title = "No data";
+    String date = "No data";
+    String comment = "No data";
+    String album = "No data";
+    String track = "No data";
+    String composer = "No data";
+    String genre =  "No data";
     int frequency = 0;
     int bitrate = 0;
     int channels = 0;

@@ -30,25 +30,8 @@
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
     <script src="js/ie-emulation-modes-warning.js"></script>
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <script
-    language="JavaScript">
-    <!--
-    thumbONE= new Image();
-    thumbONE.src = "knopf.jpg"
-    button2= new Image();
-    button2.src = "email.jpg"
-    /* usw. für alle Grafiken,
-    die am Mouse-Over-Effekt beteiligt sind */
-    //-->
-    </script>
 	<title>ITM Search</title>
-    </head>
-    <body>
-	
+    </head>	
         <%      
             String tag = null;
 
@@ -64,6 +47,13 @@
                 <jsp:forward page="index.jsp" /> 
                 <% }                
         %>
+        <% if(tag.equals("image")){ %> <body class="imagebackground"> <% }          //Spezifische Hintergreunde fuer Image/Audio/Video/Farben
+        if(tag.equals("audio")){ %> <body class="audiobackground"> <% }
+        if(tag.equals("video")){ %> <body class="videobackground"> <% } 
+        if(tag.equals("red")){ %> <body class="redbackground"> <% }       
+        if(tag.equals("green")){ %> <body class="greenbackground"> <% }        
+        if(tag.equals("blue")){ %> <body class="bluebackground"> <% }        
+        else{ %> <body> <% } %>
 
 				<!-- top navbar -->
     <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -72,7 +62,7 @@
 			
 		<div class="col-lg-3 col-sm-3 col-xs-3" ></div>		
 		<div class="col-lg-2 col-sm-2 col-xs-2" >	
-           <a class="navbar-brand" href="#">ITM Tag Search ( <%=tag %> )</a>
+           <a class="navbar-brand" href="#">ITM Tag Search ("<%=tag%>")</a>
         </div>
         <div class="col-lg-1 col-sm-1 col-xs-1" >
            <a class="navbar-brand" href="/itm/tags.jsp?tag=image" style="font-size: 100%"><span class="glyphicon glyphicon-camera"></span>  Image</a>
