@@ -100,7 +100,8 @@
             int c=0; // counter for rowbreak after 3 thumbnails.
             // iterate over all available media objects
             %>
-            	<div class="row" style="display:block; margin-left:auto; margin-right:auto; width: 13vm; padding-top: 10%; padding-bottom: 10%;" > 
+            <!-- Reihe umfasst alle Media Elemente -->
+            <div class="row" style="display:block; margin-left:auto; margin-right:auto; width: 13vm; padding-top: 10%; padding-bottom: 10%;" > 
             <% 
             
             for ( AbstractMedia medium : media ) {
@@ -111,118 +112,77 @@
                     <!-- <div style="width:300px;height:460px;padding:10px;float:left;" class="jumbotron">  -->
                 <%
             
-                // handle images
-                if ( medium instanceof ImageMedia ) {
-                	 // ***************************************************************
-                    //  Fill in your code here!
-                    // ***************************************************************
-                    
-                    // show the histogram of the image on mouse-over
-                    
-                    // display image thumbnail and metadata
+                //Handle IMAGES
+                if ( medium instanceof ImageMedia ) {                    
                     ImageMedia img = (ImageMedia) medium;
-                    
+
+                	//String beeinhaltet die Metadaten und wird über JavaScript in der Lightbox eingefügt
                 	String metaData = "<b>Name: </b>" + img.getName() + " <br>" +"<b>Dimensions: </b>" + img.getWidth() + " x " + img.getHeight() + " px <br> <b>PixelSize: </b>" + img.getPixelSize() + " + <br> <b>Number Components: </b>" + img.getNumComponents() + " <br> <b>Number ColorComponents: </b>" + img.getNumColorComponents() + " <br> <b>Transparency: </b>" + img.getTransparency() + " <br> <b>Orientation: </b>" +  img.getOrientation() + " <br><b>ColorSpaceType: </b>" + img.getColorSpaceType() + "<br/>";
-                    String downloadButton = "<form action=\"/itm/media/img/" + img.getName() + "\"><button  class=\"btn btn-default\" aria-label= \"Left Align\" type=\"submit\"><span class=\"glyphicon glyphicon-download\" aria-hidden=\"true\"></span> Download</button></form>";
-                    
                     %> 
                 	
                 	<li style="list-style: none">
-                       	<div class= class="col-lg-2 col-md-2 col-sm-3 col-xs-4"><a href="#" temp="<%=metaData %>" fileName="<%= img.getName()%>"><img class="img-thumbnail" title="bla" src="media/md/<%=img.getInstance().getName()%>.thumb.png" border="0" onmouseover="this.src='media/md/<%= img.getInstance().getName() %>.hist.png.thumb.png'" onmouseout="this.src='media/md/<%= img.getInstance().getName() %>.thumb.png'" /></a>
-                       	</div>
+                       	<a href="#" temp="<%=metaData %>" fileName="<%= img.getName()%>"><img class="img-thumbnail" title="bla" src="media/md/<%=img.getInstance().getName()%>.thumb.png" border="0" onmouseover="this.src='media/md/<%= img.getInstance().getName() %>.hist.png.thumb.png'" onmouseout="this.src='media/md/<%= img.getInstance().getName() %>.thumb.png'" /></a>
                     </li>
                       
-                       	<nobr style="color:555555"><b>Name: </b><%= img.getName()%></nobr>
-                       	<br>
-						<nobr style="color:555555"><b>Tags: </b><% for ( String t : img.getTags() ) { %><a style="color:555555" href="tags.jsp?tag=<%= t %>"><%= t %></a> <% } %></nobr>
+                    <nobr style="color:555555"><b>Name: </b><%= img.getName()%></nobr>
+                    	<br>
+					<nobr style="color:555555"><b>Tags: </b><% for ( String t : img.getTags() ) { %><a style="color:555555" href="tags.jsp?tag=<%= t %>"><%= t %></a> <% } %></nobr>
 						<br>    					
                        <%
-                	} else 
+                	} else
+                		
+                //Handle AUDIO		
                 if ( medium instanceof AudioMedia ) {
-                    // display audio thumbnail and metadata
+                	
                     AudioMedia audio = (AudioMedia) medium;
                     System.out.println("DEBUG: AUDIO");
-                    %>
                     
-                        <embed class="img-thumbnail" src="media/md/<%= audio.getInstance().getName() %>.wav" autostart="false" width="200px" height="200px" />
-                        <br/>
-                        <a href="media/audio/<%= audio.getInstance().getName()%>"> Download <%= audio.getInstance().getName()%>
-                        </a>
-                    
-                    <div>
-                        Name: <%= audio.getName() %><br/>
-                        
-                                                
-                        <div id="spoilerID<%=c %>" style="display:none">          <!-- jedes Spoiler-Element kriegt eine eigene durchnummerierte ID -->
-                      	Size: <%=audio.getSize() %> <br/>
-						Tags: <%=audio.getTags() %> <br/>
-						Encoding: <%=audio.getEncoding() %> <br/>
-						Duration: <%=audio.getDuration() %> <br/>
-						Author: <%=audio.getAuthor() %> <br/>
-						Title: <%=audio.getTitle() %> <br/>
-						Date: <%=audio.getDate() %> <br/>
-						Comment: <%=audio.getComment() %> <br/>
-						Album: <%=audio.getAlbum() %> <br/>
-						Track: <%=audio.getTrack() %> <br/>
-						Composer: <%=audio.getComposer() %> <br/>
-						Genre: <%=audio.getGenre() %> <br/>
-						Frequency: <%=audio.getFrequency() %> <br/>
-						Bitrate: <%=audio.getBitrate() %> <br/>
-						Channels: <%=audio.getChannels() %> <br/>
-                    </div>
-                    <button title="Metadaten anzeigen" type="button" onclick="if(document.getElementById('spoilerID<%=c %>') .style.display=='none') {document.getElementById('spoilerID<%=c %>') .style.display=''}else{document.getElementById('spoilerID<%=c %>') .style.display='none'}">Metadaten anzeigen</button> <br/>
-                        
-                        Tags: <% for ( String t : audio.getTags() ) { %><a href="tags.jsp?tag=<%= t %>"><%= t %></a> <% } %><br/>
-                    </div>
+                    //String beeinhaltet die Metadaten und wird über JavaScript in der Lightbox eingefügt
+                	String metaData = "<b>Name: </b>" + audio.getName() + "<br> Size : " + audio.getSize() + " Byte <br> Encoding: " + audio.getEncoding() + " <br>Duration: " + audio.getDuration() + "ms <br> Author: " + audio.getAuthor() + "<br>Title: " + audio.getTitle() + "<br>Date: " + audio.getDate() + "<br>Comment: " + audio.getComment() + "<br>Album: " + audio.getAlbum() + "<br>Track: " + audio.getTrack() + "<br>Composer: " + audio.getComposer() + "<br>Genre: " + audio.getGenre() + "<br>Frequency: " + audio.getFrequency() +  "<br>Bitrate: " + audio.getBitrate() + "<br/>Channels: " + audio.getChannels() + "<br/>";
+                    %> 
+                	
+                	<li style="list-style: none" class="img-thumbnail">
+                       	<p style="font-size: 7em"><a href="#" temp="<%=metaData %>" fileName="<%= audio.getName()%>" class="audioThumb" style="width:150px; height: 150px;"><span class="glyphicon glyphicon-music" style="color: 555555;"></span></a></p>
+	                
+						<audio controls style="max-width:150px">
+					  		<source src="media/audio/<%=audio.getInstance().getName()%>" type="audio/mpeg">
+							Your browser does not support the audio element.
+						</audio>
+                	</li>
+                      
+                    <nobr style="color:555555"><b>Name: </b><%= audio.getName()%></nobr>
+                    	<br>
+					<nobr style="color:555555"><b>Tags: </b><% for ( String t : audio.getTags() ) { %><a style="color:555555" href="tags.jsp?tag=<%= t %>"><%= t %></a> <% } %></nobr>
+						<br>
                     <%  
                     } else
+                    	//Handle VIDEOS
                 if ( medium instanceof VideoMedia ) {
                     // handle videos thumbnail and metadata...
                     VideoMedia video = (VideoMedia) medium;
                     System.out.println("DEBUG: Hier ist ein Video");
                     
+                    String metaData = "<b>Size: </b>" + video.getSize() + "Byte <br><b>Video Codec: </b>" + video.getVideoCodecName() + "<br><b>Video CodecID: </b>" + video.getVideoCodecID() + " <br><b>Video Framerate: </b>" + video.getVideoFrameRate() + "<br><b>Video Length: </b>" + video.getVideoLenght() + " sec <br><b>Video Height: </b>" + video.getVideoHeight() + " px<br><b>Video Width: </b>" + video.getVideoWidth() + " px <hr><b>Audio Codec: </b>" + video.getAudioCodecName() + "<br><b>Audio CodecID: </b>" + video.getAudioCodecID() + "<br><b>Audio Channels: </b>" + video.getAudioNumChannels() + "<br><b>Audio Samplerate: </b>"+ video.getAudioSampleRate() + "<br><b>Audio Bitrate: </b>" + video.getAudioBitRate() + "<br>";
                     %>
-                        <a href="media/video/<%= video.getInstance().getName()%>">
-                            
-                        <object width="200" height="200" class="img-thumbnail">
-                            <param name="movie" value="media/md/<%= video.getInstance().getName() %>_thumb.swf">
-                            <embed src="media/md/<%= video.getInstance().getName() %>_thumb.swf" width="200" height="200">
-                            </embed>
-                        </object>
-
-                        </a>
-                    <div>
-                        Name: <a href="media/video/<%= video.getInstance().getName()%>"><%= video.getName() %></a><br/>
-                        
-                        <div id="spoilerID<%=c %>" style="display:none">          <!-- jedes Spoiler-Element kriegt eine eigene durchnummerierte ID -->
-                      	
-						Size: <%=video.getSize() %> </br>
-						Video Codec: <%=video.getVideoCodecName() %> </br>
-						Video CodecID: <%=video.getVideoCodecID() %> </br>
-						Video Framerate: <%=video.getVideoFrameRate() %> </br>
-						Video Length: <%=video.getVideoLenght() %> </br>
-						Video Height: <%=video.getVideoHeight() %> </br>
-						Video Width: <%=video.getVideoWidth() %> </br>
-						----------------------------------------------------
-						Audio Codec: <%=video.getAudioCodecName() %> </br>
-						Audio CodecID: <%=video.getAudioCodecID() %> </br>
-						Audio Channels: <%=video.getAudioNumChannels() %> </br>
-						Audio Samplerate: <%=video.getAudioSampleRate() %> </br>
-						Audio Bitrate: <%=video.getAudioBitRate() %> </br>
+                    
+                    <li style="list-style: none" >
+                       	 <object width="200" height="160" class="img-thumbnail">
+	                            <param name="movie" value="media/md/<%= video.getInstance().getName() %>_thumb.swf">
+	                            <embed src="media/md/<%= video.getInstance().getName() %>_thumb.swf" width="200" height="160">
+	                            </embed>
+	                        </object>
+                	</li>
+                
+                	
+                    <li style="list-style: none" >
+                    <nobr style="color:555555"><b>Name: </b> <a href="#" temp="<%=metaData %>" fileName="<%= video.getName()%>" class="videoThumb" style="color: 555555" ><%= video.getName() %></a></nobr>
+                    </li>
+					<nobr style="color:555555"><b>Tags: </b><% for ( String t : video.getTags() ) { %><a style="color:555555" href="tags.jsp?tag=<%= t %>"><%= t %></a> <% } %></nobr>
+						<br>
 						
-                    </div>
-                    <button title="Metadaten anzeigen" type="button" onclick="if(document.getElementById('spoilerID<%=c %>') .style.display=='none') {document.getElementById('spoilerID<%=c %>') .style.display=''}else{document.getElementById('spoilerID<%=c %>') .style.display='none'}">Metadaten anzeigen</button> <br/>
-                      
-                        
-                        Tags: <% for ( String t : video.getTags() ) { %><a href="tags.jsp?tag=<%= t %>"><%= t %></a> <% } %><br/>
-                    </div>
-                    <%  
-                    } 
-                %>
+                    <%}%>
                 		</div><!-- COLUMN -->
-          <%}
-            
-            %>
+          <%}%>
      		</div><!--  ROW  -->
 
 
@@ -289,18 +249,17 @@
            var img = '<img src="' + src + '" class="img-responsive"/>';
            
            var title = $(this).parent('a').attr("fileName");
-         	$('.modal-title').html(title);
          	// Download Button
          	
          	var temp = $(this).parent('a').attr("temp");
-			var button = '<br><hr><br><form action=';
+			var button = '<hr><form action=';
          	button = button.concat(src);
          	button = button.concat('><button  class="btn btn-default" aria-label="Left Align" type="submit"><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download</button></form>');
 			var md = temp.concat(button);
 			
          	$('.modal-footer').html(md);
          	
-         	$('.modal-title').html(title);
+           $('.modal-title').html(title);
            $('#myModal').modal();
            $('#myModal').on('shown.bs.modal', function(){
                $('#myModal .modal-body').html(img);
@@ -311,6 +270,66 @@
            });
       });  
    })</script>
+	<!-- Lädt Audio in die Lightbox -->
+   <script>
+   $(document).ready(function() {
+       $('.audioThumb').click(function () {
+    	   
+    	 var fileName = this.getAttribute("fileName");
+    	 var img ="<audio controls style=\"max-width:600px\"><source src=\"media/audio/";
+    	 img = img.concat(fileName);
+    	 img = img.concat("\" type=\"audio/mpeg\">Your browser does not support the audio element.</audio>");  
+    	   
+         var temp = this.getAttribute("temp");
+         var src = "media/audio/".concat(fileName);
          
+        	var button = '<hr><form action=';
+      		button = button.concat(src);
+      		button = button.concat('><button  class="btn btn-default" aria-label="Left Align" type="submit"><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download</button></form>');
+			var md = temp.concat(button);
+         
+			$('.modal-title').html(fileName);
+       	$('.modal-footer').html(md);
+            $('#myModal').modal();
+            $('#myModal').on('shown.bs.modal', function(){
+                $('#myModal .modal-body').html(img);
+            });
+            $('#myModal').on('hidden.bs.modal', function(){
+                $('#myModal .modal-body').html('');
+            });
+       });
+   });
+   </script>
+         
+    <!-- für Videos -->     
+    <script>
+    $(document).ready(function() {
+        $('.videoThumb').click(function () {
+       	 var fileName = this.getAttribute("fileName");
+       	 
+       	 var img = "<object width=\"500px\" height=\"400px\"> <param name=\"movie\" value=\"media/md/" + fileName + "_thumb.swf\"><embed src=\"media/md/" + fileName +"_thumb.swf\" width=\"500px\" height=\"400px\"></embed></object>";
+       	 
+         var temp = this.getAttribute("temp");
+         var src = "media/video/".concat(fileName);
+         
+        	var button = '<hr><form action=';
+      		button = button.concat(src);
+      		button = button.concat('><button  class="btn btn-default" aria-label="Left Align" type="submit"><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download</button></form>');
+			var md = temp.concat(button);
+         
+			$('.modal-title').html(fileName);
+       	$('.modal-footer').html(md);
+            $('#myModal').modal();
+            $('#myModal').on('shown.bs.modal', function(){
+                $('#myModal .modal-body').html(img);
+            });
+            $('#myModal').on('hidden.bs.modal', function(){
+                $('#myModal .modal-body').html('');
+            });
+        });
+    });
+    </script>
+    
+    
     </body>
 </html>
