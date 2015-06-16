@@ -166,20 +166,18 @@ public class MediaFactory
 		atg.batchProcessAudioFiles(audioDir, metadataDir);
 		// step 2.3 create audio metadata
 		AudioMetadataGenerator amg = new AudioMetadataGenerator();
-		ret.addAll(amg.batchProcessAudio(audioDir, metadataDir, true));
+		ret.addAll(amg.batchProcessAudio(audioDir, metadataDir, false));
 		
 		
 		// step 3.1: create video thumbnails, do not overwrite if not required
 		
 		VideoThumbnailGenerator vtg = new VideoThumbnailGenerator();
-		vtg.batchProcessVideoFiles(videoDir, metadataDir, false, 5);
+		vtg.batchProcessVideoFiles(videoDir, metadataDir, false, 2);
 		
 		// step 3.2: create video metadata, do not overwrite if not required
 		
 		VideoMetadataGenerator vmg = new VideoMetadataGenerator();
 		ret.addAll(vmg.batchProcessVideoFiles(videoDir, metadataDir, false));
-		
-		
 		
 		return ret;
 	}

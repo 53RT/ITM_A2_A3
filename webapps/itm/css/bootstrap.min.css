@@ -7,6 +7,13 @@
 */
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 
+.modal-dialog {}
+.thumbnail {margin-bottom:6px;}
+
+.carousel-control.left,.carousel-control.right{
+  background-image:none;
+}
+
 html {
     font-family: sans-serif;
     -ms-text-size-adjust: 100%;
@@ -30,7 +37,16 @@ audio:not([controls]) {
     display: none
 }
 a {
-    background-color: transparent
+    background-color: transparent;
+    color: #000000;
+}
+a:link {
+    text-decoration: none;
+    color: #000000;
+}
+.anormal-link{
+	color:ff00ff;
+	
 }
 a:active, a:hover {
     outline: 0
@@ -1072,7 +1088,7 @@ img {
 .img-responsive, .thumbnail>img, .thumbnail a>img, .carousel-inner>.item>img, .carousel-inner>.item>a>img {
     display: block;
     max-width: 100%;
-    height: auto
+    height: auto;
 }
 .img-rounded {
     border-radius: 6px
@@ -1080,8 +1096,8 @@ img {
 .img-thumbnail {
     padding: 4px;
     line-height: 1.42857143;
-    background-color: #1c1e22;
-    border: 1px solid #0c0d0e;
+    background-color: #ffffff;
+    border: 1px solid #EDEDED;
     border-radius: 4px;
     -webkit-transition: all .2s ease-in-out;
     -o-transition: all .2s ease-in-out;
@@ -4191,7 +4207,7 @@ a.badge:hover, a.badge:focus {
     margin-right: auto
 }
 a.thumbnail:hover, a.thumbnail:focus, a.thumbnail.active {
-    border-color: #ffffff
+    border-color: #ffff00
 }
 .thumbnail .caption {
     padding: 9px;
@@ -4943,8 +4959,9 @@ button.close {
 }
 .modal-footer {
     padding: 20px;
-    text-align: right;
-    border-top: 1px solid #1c1e22
+    text-align: left;
+    border-top: 1px solid #1c1e22;
+    height: auto;
 }
 .modal-footer .btn+.btn {
     margin-left: 5px;

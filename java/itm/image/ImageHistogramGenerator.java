@@ -159,7 +159,7 @@ public class ImageHistogramGenerator
 		
 		// plot the histogram, try different dimensions for better visualization
         
-        BufferedImage histogrammImage = aktHistogramm.plotHistogram(100*5, 100*5);		//es bietet sich eine Vielzahl von 256 an
+        BufferedImage histogrammImage = aktHistogramm.plotHistogram(200, 200);		//es bietet sich eine Vielzahl von 256 an
 		
         // encode and save the image as png
         
