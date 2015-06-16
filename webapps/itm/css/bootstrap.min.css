@@ -1055,8 +1055,8 @@ body {
     font-size: 14px;
     line-height: 1.42857143;
     color: #c8c8c8;
-    background-image: url("hH0upNX.jpg");
-    background-repeat: repeat;
+	background: url("aussen_1.jpg") no-repeat center center fixed;
+	background-size: cover; 
     background-color: #272b30;
     width: 900px; 
 	margin: 0 auto;

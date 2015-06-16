@@ -82,12 +82,12 @@
            
             %>
             <!-- Reihe umfasst alle Media Elemente -->
-            <div class="row" style="display:block; margin-left:auto; margin-right:auto; width: 13vm; padding-top: 10%; padding-bottom: 10%;" > 
+            <div class="row" style="background: rgba(255,255,255,.5); display:block; margin-left:auto; margin-right:auto; padding-top:2%; padding-bottom:2%; margin-top:10%; margin-bottom:10%;" > 
             <% 
             
             for ( AbstractMedia medium : media ) {
                 %>
-                	<div class="col-lg-3 col-sm-4 col-xs-6" style="background-color: FFFFFF; width: 23%; height: 23%; padding-left: 2%; padding-right: 2%; padding-top: 2%; padding-bottom: 25%;">
+                	<div class="col-lg-3 col-sm-4 col-xs-6" style="width: 23%; height: 23%; padding-left: 2%; padding-right: 2%; padding-top: 3%; padding-bottom: 25%; margin-left:1.5%; margin-right:auto;">
                 <%
             
                 //Handle IMAGES

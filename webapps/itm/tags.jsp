@@ -104,7 +104,7 @@
             // iterate over all available media objects and display them
             %>
             <!-- Reihe umfasst alle Media Elemente -->
-            <div class="row" style=" background-color: ffffff; :block; margin-left:auto; margin-right:auto; width: 13vm; padding-top: 10%; padding-bottom: 10%;" > 
+            <div class="row" style="background: rgba(255,255,255,.5); :block; margin-left:auto; margin-right:auto; width: 13vm; padding-top: 10%; padding-bottom: 10%;" > 
             <% 
             for(AbstractMedia medium : media) {
                 ArrayList<String> alltags = medium.getTags();      //tags holen
@@ -113,7 +113,7 @@
                     if(s.equals(tag)) {
                     	
                     	 %>
-                     	<div class="col-lg-3 col-sm-4 col-xs-6" style=" width: 23%; height: 23%; padding-left: 2%; padding-right: 2%; padding-top: 2%; padding-bottom: 25%;">
+                     	<div class="col-lg-3 col-sm-4 col-xs-6" style=" width: 23%; height: 23%; padding-left: 2%; padding-right: 2%; padding-top: 2%; padding-bottom: 25%; margin-left:1.5%;">
                      <%
                  
                      //Handle IMAGES

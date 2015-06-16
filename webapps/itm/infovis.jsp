@@ -65,16 +65,16 @@
     </div>
  
 	<!-- Reihe umfasst alle Media Elemente -->
-            <div class="row" style="display:block; margin-left:auto; margin-right:auto; width: 13vm; padding-top: 10%; padding-bottom: 10%; " > 
-            	<div class="row" style="background-color: FFFFFF">
+            <div class="row" style="display:block; margin-left:auto; margin-right:auto; width: 13vm; padding-top: 10%; padding-bottom: 10%; opacity:0.5; " > 
+            	<div class="row" style="background-color: FFFFFF; padding:2%;" align="middle">
             
 			        <applet code="itm.infovis.ItmApplet" 
 			                archive="infovis/prefuse.jar,infovis/itm.jar" 
 			                width="900" 
-			                height="680">
+			                height="700" align="middle">
 			        </applet>   
         		</div>
-	        	<div class="row"  style="background-color: FFFFFF">
+	        	<div class="row"  style="background-color: FFFFFF; padding:2%;" align="middle">
 	        	
 	        	<p style="margin-left: 15px; color: 555555">
 	           	 	<span class="glyphicon glyphicon-zoom-in"></span>  Zoom by right-click &amp; drag.<br>
