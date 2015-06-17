@@ -117,7 +117,7 @@
                     }                
 
                 	//String beeinhaltet die Metadaten und wird über JavaScript in der Lightbox eingefügt
-                	String metaData = "<b>Name: </b>" + img.getName() + " <br>" +"<b>Dimensions: </b>" + img.getWidth() + " x " + img.getHeight() + " px <br> <b>PixelSize: </b>" + img.getPixelSize() + " + <br> <b>Number of Components: </b>" + img.getNumComponents() + " <br> <b>Number of ColorComponents: </b>" + img.getNumColorComponents() + " <br> <b>Transparency: </b>" + readableTransparency + " <br> <b>Orientation: </b>" + readableOrientation + " <br><b>ColorSpaceType: </b>" + readableColorSpaceType + "<br/>";
+                	String metaData = "<b>Name: </b>" + img.getName() + " <br>" +"<b>Dimensions: </b>" + img.getWidth() + " x " + img.getHeight() + " px <br> <b>Bits per pixel (PixelSize): </b>" + img.getPixelSize() + "<br> <b>Number of Components: </b>" + img.getNumComponents() + " <br> <b>Number of ColorComponents: </b>" + img.getNumColorComponents() + " <br> <b>Transparency: </b>" + readableTransparency + " <br> <b>Orientation: </b>" + readableOrientation + " <br><b>ColorSpaceType: </b>" + readableColorSpaceType + "<br/>";
                     %> 
                 	
                 	<li style="list-style: none">
@@ -155,18 +155,18 @@
                     }
 
                     int readableSize = (int) audio.getSize();
-                    if (readableSize > 1000)
+                    if (readableSize >= 1000)
                         readableSize /= 1000;
                     
                     //String beeinhaltet die Metadaten und wird über JavaScript in der Lightbox eingefügt
-                	String metaData = "<b>Name: </b>" + audio.getName() + "<br> <b>Size : </b>" + readableSize + " Kb" + " (" + audio.getSize() + " Byte) <br> <b>Encoding: </b>" + audio.getEncoding() + " <br><b>Duration: </b>" + readableDuration + " min <br> <b>Author: </b>" + audio.getAuthor() + "<br><b>Title: </b>" + audio.getTitle() + "<br><b>Date: </b>" + audio.getDate() + "<br><b>Comment: </b>" + audio.getComment() + "<br><b>Album: </b>" + audio.getAlbum() + "<br><b>Track: </b>" + audio.getTrack() + "<br><b>Composer: </b>" + audio.getComposer() + "<br><b>Genre: </b>" + audio.getGenre() + "<br><b>Frequency: </b>" + audio.getFrequency() + " Hz" + "<br><b>Bitrate: </b>" + stringKiloBitrate + "<br/><b>Channels: </b>" + audio.getChannels() + "<br/>";
+                	String metaData = "<b>Name: </b>" + audio.getName() + "<br> <b>Size : </b>" + readableSize + " kB" + " (" + audio.getSize() + " Byte) <br> <b>Encoding: </b>" + audio.getEncoding() + " <br><b>Duration: </b>" + readableDuration + " min <br> <b>Author: </b>" + audio.getAuthor() + "<br><b>Title: </b>" + audio.getTitle() + "<br><b>Date: </b>" + audio.getDate() + "<br><b>Comment: </b>" + audio.getComment() + "<br><b>Album: </b>" + audio.getAlbum() + "<br><b>Track: </b>" + audio.getTrack() + "<br><b>Composer: </b>" + audio.getComposer() + "<br><b>Genre: </b>" + audio.getGenre() + "<br><b>Frequency: </b>" + audio.getFrequency() + " Hz" + "<br><b>Bitrate: </b>" + stringKiloBitrate + "<br/><b>Channels: </b>" + audio.getChannels() + "<br/>";
                     %> 
                 	
                 	<li style="list-style: none" class="img-thumbnail">
                        	<p style="font-size: 7em"><a href="#" temp="<%=metaData %>" fileName="<%= audio.getName()%>" class="audioThumb" style="width:150px; height: 150px;"><span class="glyphicon glyphicon-music" style="color: 555555;"></span></a></p>
 	                
-						<audio controls style="max-width:150px">
-					  		<source src="media/audio/<%=audio.getInstance().getName()%>" type="audio/wav">
+						<audio controls style="max-width:150px; height:20px">
+					  		<source src="media/md/<%=audio.getInstance().getName()%>.wav" type="audio/wav">
 							Your browser does not support the audio element.
 						</audio>
                 	</li>
@@ -182,7 +182,25 @@
                 if ( medium instanceof VideoMedia ) {
                     VideoMedia video = (VideoMedia) medium;
 
-                    String metaData = "<b>Size: </b>" + video.getSize() + "Byte <br><b>Video Codec: </b>" + video.getVideoCodecName() + "<br><b>Video CodecID: </b>" + video.getVideoCodecID() + " <br><b>Video Framerate: </b>" + video.getVideoFrameRate() + "<br><b>Video Length: </b>" + video.getVideoLenght() + " sec <br><b>Video Height: </b>" + video.getVideoHeight() + " px<br><b>Video Width: </b>" + video.getVideoWidth() + " px <hr><b>Audio Codec: </b>" + video.getAudioCodecName() + "<br><b>Audio CodecID: </b>" + video.getAudioCodecID() + "<br><b>Audio Channels: </b>" + video.getAudioNumChannels() + "<br><b>Audio Samplerate: </b>"+ video.getAudioSampleRate() + "<br><b>Audio Bitrate: </b>" + video.getAudioBitRate() + "<br>";
+                    int micro = (int) (video.getVideoLenght() * 1000000);
+                    int mili = micro / 1000;             //Duration in microsec wird umgerechnet
+                    int min = (mili / 1000) / 60; 
+                    int sec = (mili / 1000) % 60;
+                    String readableVideoLength;
+                    
+                    String secString = Integer.toString(sec);                   //Sekunden in String konvertiert
+                    if (sec < 10) {                                             
+                        StringBuilder sb = new StringBuilder(secString);        
+                        sb.insert(0, "0");                                      //bei einstelligen Werten wird 0 am Anfang hinzugefuegt
+                        secString = sb.toString();
+                    }     
+                    readableVideoLength = min + ":" + secString;
+
+                    int readableBitrate = (int) video.getAudioBitRate();
+                    if (readableBitrate >= 1000)
+                        readableBitrate /= 1000;
+
+                    String metaData = "<b>Size: </b>" + video.getSize() + "Byte <br><b>Video Codec: </b>" + video.getVideoCodecName() + "<br><b>Video CodecID: </b>" + video.getVideoCodecID() + " <br><b>Video Framerate: </b>" + video.getVideoFrameRate() + "<br><b>Video Length: </b>" + readableVideoLength + " min <br><b>Video Height: </b>" + video.getVideoHeight() + " px<br><b>Video Width: </b>" + video.getVideoWidth() + " px <hr><b>Audio Codec: </b>" + video.getAudioCodecName() + "<br><b>Audio CodecID: </b>" + video.getAudioCodecID() + "<br><b>Audio Channels: </b>" + video.getAudioNumChannels() + "<br><b>Audio Samplerate: </b>"+ video.getAudioSampleRate() + " Hz" + "<br><b>Audio Bitrate: </b>" + readableBitrate + " kbit/s" + "<br>";
                     %>
                     
                     <li style="list-style: none" >

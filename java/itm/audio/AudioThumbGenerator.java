@@ -142,8 +142,16 @@ public class AudioThumbGenerator {
 			e.printStackTrace();
 		}		
 		
-		AudioFormat eingangsFormat = in.getFormat();	
-    		
+		AudioFormat eingangsFormat = in.getFormat();
+        
+		AudioFormat decFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 	//PCM-Format erstellen
+		    eingangsFormat.getSampleRate(),
+		    16,
+		    eingangsFormat.getChannels(),
+		    eingangsFormat.getChannels() * 2,
+		    eingangsFormat.getSampleRate(),
+		    false); 		
+		
 		AudioFileFormat eingangsFileFormat = null;
 	
 		try {			
@@ -152,15 +160,17 @@ public class AudioThumbGenerator {
 			e.printStackTrace();
 		}
 
+		
 		// cut the audio data in the stream to a given length
 							
 		long thumbFrames = thumbNailLength * (int) eingangsFormat.getFrameRate();		//für WAV reicht das
-				
+		
+		AudioInputStream thumb = new AudioInputStream(in, eingangsFormat, thumbFrames);		//Neuen, kürzeren (WAV-)Stream erstellen
+
+		
         String filename = input.getName();	        						//liest den aktuellen Dateinamen aus 
         filename = filename.toLowerCase();									//ev. Grossschreibung raus
 		String format = filename.substring(filename.length() - 3);			//die letzten drei Buchstaben des Dateinamens -> Dateiendung
-        	
-		AudioInputStream thumb = new AudioInputStream(in, eingangsFormat, thumbFrames);		//Neuen, kürzeren Stream erstellen
 		
         if (format.equals("mp3")){
         	
@@ -170,25 +180,15 @@ public class AudioThumbGenerator {
 			if (entry.getKey().equals("bitrate"))
 				 bitrate = (int) entry.getValue();
     		}
-    		AudioFormat audioFormat = in.getFormat();	
         	
-    		int framegroesse = (int) ((144 * bitrate) / audioFormat.getSampleRate());		//Wert abhaengig von der jew. Bitrate des Files berechnen
+    		int framegroesse = (int) ((144 * bitrate) / eingangsFormat.getSampleRate());		//Wert abhaengig von der jew. Bitrate des Files berechnen
         	thumbFrames = thumbFrames * framegroesse;										//MP3-Thumbframes
         	
-        	thumb = new AudioInputStream(in, eingangsFormat, thumbFrames);	
+        	thumb = new AudioInputStream(in, eingangsFormat, thumbFrames);
+        	thumb = AudioSystem.getAudioInputStream(decFormat, thumb);
         }
         
-        if (format.equals("ogg")){									
-            
-    		AudioFormat audioFormat = in.getFormat();	
-    		            
-        	AudioFormat decFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 	//PCM-Format erstellen
-                    audioFormat.getSampleRate(),
-                    16,
-                    audioFormat.getChannels(),
-                    audioFormat.getChannels() * 2,
-                    audioFormat.getSampleRate(),
-                    true);      	
+        if (format.equals("ogg")){									               	
         	
         	File tempFile = new File(output, input.getName() + ".tmp");		//Idee: Temporaeres File erstellen, dass dann eingelesen und umgewandelt wird. Direkt gings nicht. 
             FileOutputStream tempFOS = new FileOutputStream(tempFile); 
@@ -201,17 +201,22 @@ public class AudioThumbGenerator {
             }
             
             tempFOS.close();
-            FileInputStream oggFiStream = new FileInputStream(tempFile);
-
+            
         	thumbFrames = (long) (thumbNailLength * eingangsFormat.getSampleRate());										
-           
-            thumb = new AudioInputStream(oggFiStream, eingangsFormat, thumbFrames);			
-            tempFile.delete();           
+            
+        	FileInputStream fis = new FileInputStream(tempFile);
+
+            AudioInputStream oggFiStream = null;
+            oggFiStream = new AudioInputStream(fis, decFormat, thumbFrames);
+            
+            thumb = AudioSystem.getAudioInputStream(decFormat, oggFiStream);
+                    	
+            tempFile.delete();   
         }       
 
 		// save the acoustic thumbnail as WAV file
-						
-		AudioSystem.write(thumb, AudioFileFormat.Type.WAVE, outputFile);
+
+    	AudioSystem.write(thumb, AudioFileFormat.Type.WAVE, outputFile);
 
 		return outputFile;
 	}
