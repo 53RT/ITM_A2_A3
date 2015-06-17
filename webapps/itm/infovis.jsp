@@ -45,25 +45,25 @@
 			
 		<div class="col-lg-3 col-sm-3 col-xs-3" ></div>		
 		<div class="col-lg-2 col-sm-2 col-xs-2" >	
-           <a class="navbar-brand" href="/itm/infovis.jsp">ITM Infovis</a>
+           <nobr><a style="font-size: 1.1vw " class="navbar-brand" href="/itm/infovis.jsp">ITM Infovis</a></nobr>
         </div>
         <div class="col-lg-1 col-sm-1 col-xs-1" >
-           <a class="navbar-brand" href="/itm/tags.jsp?tag=image" style="font-size: 100%"><span class="glyphicon glyphicon-camera"></span>  Image</a>
+           <nobr><a class="navbar-brand" href="/itm/tags.jsp?tag=image" style="font-size: 0.8vw"><span class="glyphicon glyphicon-camera"></span>  Image</a></nobr>
         </div>
         <div class="col-lg-1 col-sm-1 col-xs-1" >
-           <a class="navbar-brand" href="/itm/tags.jsp?tag=audio" style="font-size: 100%"><span class="glyphicon glyphicon-headphones"></span>  Audio</a>
+           <nobr><a class="navbar-brand" href="/itm/tags.jsp?tag=audio" style="font-size: 0.8vw"><span class="glyphicon glyphicon-headphones"></span>  Audio</a></nobr>
         </div>
         <div class="col-lg-1 col-sm-1 col-xs-1" >
-           <a class="navbar-brand" href="/itm/tags.jsp?tag=video" style="font-size: 100%"><span class="glyphicon glyphicon-film"></span>  Video</a>
+           <nobr><a class="navbar-brand" href="/itm/tags.jsp?tag=video" style="font-size: 0.8vw"><span class="glyphicon glyphicon-film"></span>  Video</a></nobr>
         </div>
         <div class="col-lg-1 col-sm-1 col-xs-1" >
-           <a class="navbar-brand" href="/itm/index.jsp" style="font-size: 100%"style="font-size: 100%"><span class="glyphicon glyphicon-home"></span>  Home</a>
+           <nobr><a class="navbar-brand" href="/itm/index.jsp" style="font-size: 0.8vw"><span class="glyphicon glyphicon-home"></span>  Home</a></nobr>
         </div>
-        <div class="col-lg-3 col-sm-3 col-xs-3" ><h6 align="right" style="margin-right: 30px">by J. Busching & G. Sluiter</h6></div>
+        <div class="col-lg-3 col-sm-3 col-xs-3" ><nobr><h6 align="right" style="margin-right: 30px; font-size: 0.65vw">by J. Busching & G. Sluiter</h6></nobr></div>
         
        </div>
     </div>
- 
+  
 	<!-- Reihe umfasst alle Media Elemente -->
             <div class="row" style="display:block; margin-left:auto; margin-right:auto; width: 13vm; padding-top: 10%; padding-bottom: 10%; opacity:0.5; " > 
             	<div class="row" style="background-color: FFFFFF; padding:2%;" align="middle">

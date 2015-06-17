@@ -40,21 +40,21 @@
 			
 		<div class="col-lg-3 col-sm-3 col-xs-3" ></div>		
 		<div class="col-lg-2 col-sm-2 col-xs-2" >	
-           <a class="navbar-brand" href="/itm/index.jsp">ITM Media Library</a>
+           <nobr><a style="font-size: 1.1vw " class="navbar-brand" href="/itm/index.jsp">ITM Media Library</a></nobr>
         </div>
         <div class="col-lg-1 col-sm-1 col-xs-1" >
-           <a class="navbar-brand" href="/itm/tags.jsp?tag=image" style="font-size: 100%"><span class="glyphicon glyphicon-camera"></span>  Image</a>
+           <nobr><a class="navbar-brand" href="/itm/tags.jsp?tag=image" style="font-size: 0.8vw"><span class="glyphicon glyphicon-camera"></span>  Image</a></nobr>
         </div>
         <div class="col-lg-1 col-sm-1 col-xs-1" >
-           <a class="navbar-brand" href="/itm/tags.jsp?tag=audio" style="font-size: 100%"><span class="glyphicon glyphicon-headphones"></span>  Audio</a>
+           <nobr><a class="navbar-brand" href="/itm/tags.jsp?tag=audio" style="font-size: 0.8vw"><span class="glyphicon glyphicon-headphones"></span>  Audio</a></nobr>
         </div>
         <div class="col-lg-1 col-sm-1 col-xs-1" >
-           <a class="navbar-brand" href="/itm/tags.jsp?tag=video" style="font-size: 100%"><span class="glyphicon glyphicon-film"></span>  Video</a>
+           <nobr><a class="navbar-brand" href="/itm/tags.jsp?tag=video" style="font-size: 0.8vw"><span class="glyphicon glyphicon-film"></span>  Video</a></nobr>
         </div>
         <div class="col-lg-1 col-sm-1 col-xs-1" >
-           <a class="navbar-brand" href="/itm/infovis.jsp" style="font-size: 100%"style="font-size: 100%"><span class="glyphicon glyphicon-modal-window"></span>  Infovis</a>
+           <nobr><a class="navbar-brand" href="/itm/infovis.jsp" style="font-size: 0.8vw"style="font-size: 100%"><span class="glyphicon glyphicon-modal-window"></span>  Infovis</a></nobr>
         </div>
-        <div class="col-lg-3 col-sm-3 col-xs-3" ><h6 align="right" style="margin-right: 30px">by J. Busching & G. Sluiter</h6></div>
+        <div class="col-lg-3 col-sm-3 col-xs-3" ><nobr><h6 align="right" style="margin-right: 30px; font-size: 0.65vw">by J. Busching & G. Sluiter</h6></nobr></div>
         
        </div>
     </div>
@@ -163,7 +163,7 @@
                     %> 
                 	
                 	<li style="list-style: none" class="img-thumbnail">
-                       	<p style="font-size: 7em"><a href="#" temp="<%=metaData %>" fileName="<%= audio.getName()%>" class="audioThumb" style="width:150px; height: 150px;"><span class="glyphicon glyphicon-music" style="color: 555555;"></span></a></p>
+                       	<p style="font-size: 7em; margin-top: 8px; margin-bottom: 20px;" align="center"><a href="#" temp="<%=metaData %>" fileName="<%= audio.getName()%>" class="audioThumb" style="width:150px; height: 150px;"><span class="glyphicon glyphicon-music" style="color: 555555;"></span></a></p>
 	                
 						<audio controls style="max-width:150px; height:20px">
 					  		<source src="media/md/<%=audio.getInstance().getName()%>.wav" type="audio/wav">
@@ -200,7 +200,7 @@
                     if (readableBitrate >= 1000)
                         readableBitrate /= 1000;
 
-                    String metaData = "<b>Size: </b>" + video.getSize() + "Byte <br><b>Video Codec: </b>" + video.getVideoCodecName() + "<br><b>Video CodecID: </b>" + video.getVideoCodecID() + " <br><b>Video Framerate: </b>" + video.getVideoFrameRate() + "<br><b>Video Length: </b>" + readableVideoLength + " min <br><b>Video Height: </b>" + video.getVideoHeight() + " px<br><b>Video Width: </b>" + video.getVideoWidth() + " px <hr><b>Audio Codec: </b>" + video.getAudioCodecName() + "<br><b>Audio CodecID: </b>" + video.getAudioCodecID() + "<br><b>Audio Channels: </b>" + video.getAudioNumChannels() + "<br><b>Audio Samplerate: </b>"+ video.getAudioSampleRate() + " Hz" + "<br><b>Audio Bitrate: </b>" + readableBitrate + " kbit/s" + "<br>";
+                    String metaData = "<b>Size: </b>" + video.getSize() + " Bytes <br><b>Video Codec: </b>" + video.getVideoCodecName() + "<br><b>Video CodecID: </b>" + video.getVideoCodecID() + " <br><b>Video Framerate: </b>" + video.getVideoFrameRate() + "<br><b>Video Length: </b>" + readableVideoLength + " min <br><b>Video Height: </b>" + video.getVideoHeight() + " px<br><b>Video Width: </b>" + video.getVideoWidth() + " px <hr><b>Audio Codec: </b>" + video.getAudioCodecName() + "<br><b>Audio CodecID: </b>" + video.getAudioCodecID() + "<br><b>Audio Channels: </b>" + video.getAudioNumChannels() + "<br><b>Audio Samplerate: </b>"+ video.getAudioSampleRate() + " Hz" + "<br><b>Audio Bitrate: </b>" + readableBitrate + " kbit/s" + "<br>";
                     %>
                     
                     <li style="list-style: none" >
@@ -331,7 +331,7 @@
         $('.videoThumb').click(function () {
        	 var fileName = this.getAttribute("fileName");
        	 
-       	 var img = "<object width=\"500px\" height=\"400px\"> <param name=\"movie\" value=\"media/md/" + fileName + "_thumb.swf\"><embed src=\"media/md/" + fileName +"_thumb.swf\" width=\"500px\" height=\"400px\"></embed></object>";
+       	 var img = "<object width=\"100%%\" height=\"40%\" > <param name=\"movie\" value=\"media/md/" + fileName + "_thumb.swf\" > <param name=bgcolor value=\"000000\"> <embed src=\"media/md/" + fileName +"_thumb.swf\" width=\"100%\" height=\"40%\" ></embed></object>";
        	 
          var temp = this.getAttribute("temp");
          var src = "media/video/".concat(fileName);

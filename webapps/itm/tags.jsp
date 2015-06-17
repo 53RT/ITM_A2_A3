@@ -55,31 +55,34 @@
         if(tag.equals("blue")){ %> <body class="bluebackground"> <% }        
         else{ %> <body> <% } %>
 
-				<!-- top navbar -->
+	
+	
+	<!-- top navbar -->
     <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     
 		<div class="row" >
 			
 		<div class="col-lg-3 col-sm-3 col-xs-3" ></div>		
 		<div class="col-lg-2 col-sm-2 col-xs-2" >	
-           <a class="navbar-brand" href="#">ITM Tag Search ("<%=tag%>")</a>
+           <nobr><a style="font-size: 1.1vw " class="navbar-brand" href="#">ITM Tag Search ( <%=tag%> )</a></nobr>
         </div>
         <div class="col-lg-1 col-sm-1 col-xs-1" >
-           <a class="navbar-brand" href="/itm/tags.jsp?tag=image" style="font-size: 100%"><span class="glyphicon glyphicon-camera"></span>  Image</a>
+           <nobr><a class="navbar-brand" href="/itm/tags.jsp?tag=image" style="font-size: 0.8vw"><span class="glyphicon glyphicon-camera"></span>  Image</a></nobr>
         </div>
         <div class="col-lg-1 col-sm-1 col-xs-1" >
-           <a class="navbar-brand" href="/itm/tags.jsp?tag=audio" style="font-size: 100%"><span class="glyphicon glyphicon-headphones"></span>  Audio</a>
+           <nobr><a class="navbar-brand" href="/itm/tags.jsp?tag=audio" style="font-size: 0.8vw"><span class="glyphicon glyphicon-headphones"></span>  Audio</a></nobr>
         </div>
         <div class="col-lg-1 col-sm-1 col-xs-1" >
-           <a class="navbar-brand" href="/itm/tags.jsp?tag=video" style="font-size: 100%"><span class="glyphicon glyphicon-film"></span>  Video</a>
+           <nobr><a class="navbar-brand" href="/itm/tags.jsp?tag=video" style="font-size: 0.8vw"><span class="glyphicon glyphicon-film"></span>  Video</a></nobr>
         </div>
         <div class="col-lg-1 col-sm-1 col-xs-1" >
-           <a class="navbar-brand" href="/itm/index.jsp" style="font-size: 100%"style="font-size: 100%"><span class="glyphicon glyphicon-home"></span>  Home</a>
+           <nobr><a class="navbar-brand" href="/itm/index.jsp" style="font-size: 0.8vw"style="font-size: 100%"><span class="glyphicon glyphicon-home"></span>  Home</a></nobr>
         </div>
-        <div class="col-lg-3 col-sm-3 col-xs-3" ><h6 align="right" style="margin-right: 30px">by J. Busching & G. Sluiter</h6></div>
+        <div class="col-lg-3 col-sm-3 col-xs-3" ><nobr><h6 align="right" style="margin-right: 30px; font-size: 0.65vw">by J. Busching & G. Sluiter</h6></nobr></div>
         
        </div>
     </div>
+
 
         <%
 
@@ -181,7 +184,7 @@
                         %> 
                      	
                      	<li style="list-style: none" class="img-thumbnail">
-                            	<p style="font-size: 7em"><a href="#" temp="<%=metaData %>" fileName="<%= audio.getName()%>" class="audioThumb" style="width:150px; height: 150px;"><span class="glyphicon glyphicon-music" style="color: 555555;"></span></a></p>
+                            	<p style="font-size: 7em; margin-top: 8px; margin-bottom: 20px;" align="center"><a href="#" temp="<%=metaData %>" fileName="<%= audio.getName()%>" class="audioThumb" style="width:150px; height: 150px;"><span class="glyphicon glyphicon-music" style="color: 555555;"></span></a></p>
      	                
      						<audio controls style="max-width:150px; height:20px">
      					  		<source src="media/md/<%=audio.getInstance().getName()%>.wav" type="audio/mpeg">
@@ -356,7 +359,7 @@
         $('.videoThumb').click(function () {
        	 var fileName = this.getAttribute("fileName");
        	 
-       	 var img = "<object width=\"500px\" height=\"400px\"> <param name=\"movie\" value=\"media/md/" + fileName + "_thumb.swf\"><embed src=\"media/md/" + fileName +"_thumb.swf\" width=\"500px\" height=\"400px\"></embed></object>";
+       	 var img = "<object width=\"500px\" height=\"400px\"> <param name=\"movie\" value=\"media/md/" + fileName + "_thumb.swf\"><param name=bgcolor value=\"000000\"><embed src=\"media/md/" + fileName +"_thumb.swf\" width=\"500px\" height=\"400px\"></embed></object>";
        	 
          var temp = this.getAttribute("temp");
          var src = "media/video/".concat(fileName);
