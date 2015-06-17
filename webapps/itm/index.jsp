@@ -64,8 +64,8 @@
             // we use it here for the sake of simplicity.
 
             
-            String basePath = "webapps/itm/media";
-            //String basePath = "C:\\Users\\Gert\\workspace\\assignment2\\webapps\\itm\\media";
+            //String basePath = "webapps/itm/media";
+            String basePath = "C:\\Users\\Gert\\workspace\\assignment2\\webapps\\itm\\media";
             		
             if ( basePath == null )
                 throw new NullPointerException( "could not determine base path of media directory! please set manually in JSP file!" );
