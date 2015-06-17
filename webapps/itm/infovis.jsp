@@ -36,7 +36,7 @@
     <title>ITM Infovis</title>
     
     </head>
-    <body>
+    <body class="infovisbackground">
  
  	<!-- top navbar -->
     <div class="navbar navbar-default navbar-fixed-top" role="navigation">
