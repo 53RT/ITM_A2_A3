@@ -204,9 +204,9 @@
                     %>
                     
                     <li style="list-style: none" >
-                       	 <object width="200" height="160" class="img-thumbnail">
+                       	 <object width="200px" height="160px" class="img-thumbnail">
 	                            <param name="movie" value="media/md/<%= video.getInstance().getName() %>_thumb.swf">
-	                            <embed src="media/md/<%= video.getInstance().getName() %>_thumb.swf" width="200" height="160">
+	                            <embed src="media/md/<%= video.getInstance().getName() %>_thumb.swf" width="160px" height="150px">
 	                            </embed>
 	                        </object>
                 	</li>
@@ -331,7 +331,7 @@
         $('.videoThumb').click(function () {
        	 var fileName = this.getAttribute("fileName");
        	 
-       	 var img = "<object width=\"100%%\" height=\"40%\" > <param name=\"movie\" value=\"media/md/" + fileName + "_thumb.swf\" > <param name=bgcolor value=\"000000\"> <embed src=\"media/md/" + fileName +"_thumb.swf\" width=\"100%\" height=\"40%\" ></embed></object>";
+       	 var img = "<object width=\"100%\" height=\"40%\" > <param name=\"movie\" value=\"media/md/" + fileName + "_thumb.swf\" > <param name=bgcolor value=\"000000\"> <embed src=\"media/md/" + fileName +"_thumb.swf\" width=\"100%\" height=\"40%\" ></embed></object>";
        	 
          var temp = this.getAttribute("temp");
          var src = "media/video/".concat(fileName);

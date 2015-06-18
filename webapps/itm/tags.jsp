@@ -225,21 +225,25 @@
 
                         String metaData = "<b>Size: </b>" + video.getSize() + "Byte <br><b>Video Codec: </b>" + video.getVideoCodecName() + "<br><b>Video CodecID: </b>" + video.getVideoCodecID() + " <br><b>Video Framerate: </b>" + video.getVideoFrameRate() + "<br><b>Video Length: </b>" + readableVideoLength + " min <br><b>Video Height: </b>" + video.getVideoHeight() + " px<br><b>Video Width: </b>" + video.getVideoWidth() + " px <hr><b>Audio Codec: </b>" + video.getAudioCodecName() + "<br><b>Audio CodecID: </b>" + video.getAudioCodecID() + "<br><b>Audio Channels: </b>" + video.getAudioNumChannels() + "<br><b>Audio Samplerate: </b>"+ video.getAudioSampleRate() + " Hz" + "<br><b>Audio Bitrate: </b>" + readableBitrate + " kbit/s" + "<br>";
                         %>
-                         
-                         <li style="list-style: none" >
+                        
+                        
                             	 <object width="200" height="160" class="img-thumbnail">
      	                            <param name="movie" value="media/md/<%= video.getInstance().getName() %>_thumb.swf">
-     	                            <embed src="media/md/<%= video.getInstance().getName() %>_thumb.swf" width="200" height="160">
+     	                            <param name="wmode" value="opaque">
+     	                            <embed src="media/md/<%= video.getInstance().getName() %>_thumb.swf" width="160px" height="150px">
      	                            </embed>
      	                        </object>
-                     	</li>
-                     
-                     	
+     	                 
+     	             	
+     	             	<div position:absolute>
                          <li style="list-style: none" >
                          <nobr style="color:555555"><b>Name: </b> <a href="#" temp="<%=metaData %>" fileName="<%= video.getName()%>" class="videoThumb" style="color: 555555" ><%= video.getName() %></a></nobr>
                          </li>
      					<nobr style="color:555555"><b>Tags: </b><% for ( String t : video.getTags() ) { %><a style="color:555555" href="tags.jsp?tag=<%= t %>"><%= t %></a> <% } %></nobr>
      						<br>
+     					
+     					
+     					</div>
              		</div><!-- COLUMN -->
                          <%
                      	break;    
@@ -275,8 +279,7 @@
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
-
-     		
+</div>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -374,9 +377,6 @@
             $('#myModal').modal();
             $('#myModal').on('shown.bs.modal', function(){
                 $('#myModal .modal-body').html(img);
-            });
-            $('#myModal').on('hidden.bs.modal', function(){
-                $('#myModal .modal-body').html('');
             });
         });
     });
