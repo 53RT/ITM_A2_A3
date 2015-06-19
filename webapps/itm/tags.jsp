@@ -235,15 +235,12 @@
      	                        </object>
      	                 
      	             	
-     	             	<div position:absolute>
                          <li style="list-style: none" >
                          <nobr style="color:555555"><b>Name: </b> <a href="#" temp="<%=metaData %>" fileName="<%= video.getName()%>" class="videoThumb" style="color: 555555" ><%= video.getName() %></a></nobr>
                          </li>
      					<nobr style="color:555555"><b>Tags: </b><% for ( String t : video.getTags() ) { %><a style="color:555555" href="tags.jsp?tag=<%= t %>"><%= t %></a> <% } %></nobr>
      						<br>
      					
-     					
-     					</div>
              		</div><!-- COLUMN -->
                          <%
                      	break;    

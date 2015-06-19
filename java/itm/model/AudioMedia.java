@@ -183,13 +183,14 @@ public class AudioMedia extends AbstractMedia {
         int min = (mili / 1000) / 60;
         int sec = (mili / 1000) % 60;
         
+        //Wird in der View umgerechnet da sonst deserialisierung nicht mehr geht.
         String secString = Integer.toString(sec);					//Sekunden in String konvertiert
         if (sec < 10) {												
         	StringBuilder sb = new StringBuilder(secString);		
         	sb.insert(0, "0");										//bei einstelligen Werten wird 0 am Anfang hinzugefuegt
         	secString = sb.toString();
         }     
-		out.println("duration: " + min + ":" + secString);
+		out.println("duration: " + getDuration());
 		
 		out.println("author: " + getAuthor());
 		out.println("title: " + getTitle());
@@ -201,9 +202,10 @@ public class AudioMedia extends AbstractMedia {
 		out.println("genre: " + getGenre());
 		out.println("frequency: " + getFrequency());
 		
+		// Teil entfernt da er kBs nicht deserialisieren kann!
 		if (getBitrate() == 0)
 			out.println("bitrate: " + "Keine Information vorhanden");
-		else out.println("bitrate: " + getBitrate()/1000 + " kB/s");
+		else out.println("bitrate: " + getBitrate());
 		
 		out.println("channels: " + getChannels());
 		
@@ -218,6 +220,7 @@ public class AudioMedia extends AbstractMedia {
 	 */
 	@Override
 	public void deserializeObject(String data) throws IOException {
+		
 		super.deserializeObject(data);
 
 		StringReader sr = new StringReader(data);

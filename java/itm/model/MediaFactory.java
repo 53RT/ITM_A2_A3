@@ -172,7 +172,7 @@ public class MediaFactory
 		// step 3.1: create video thumbnails, do not overwrite if not required
 		
 		VideoThumbnailGenerator vtg = new VideoThumbnailGenerator();
-		vtg.batchProcessVideoFiles(videoDir, metadataDir, false, 2);
+		vtg.batchProcessVideoFiles(videoDir, metadataDir, false, 2); // Alle 2 Sekunden ergibt auch für das Panda Video ein sinnvollen Thumbnail
 		
 		// step 3.2: create video metadata, do not overwrite if not required
 		

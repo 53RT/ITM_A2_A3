@@ -26,7 +26,7 @@ public class VideoMedia extends AbstractMedia {
 	//VideoFramerate
 	protected String videoFrameRate;
 	//VideoLength (Sec)
-	protected double videoLenght;
+	protected double videoLength;
 	//VideoHeight
 	protected int videoHeight;
 	//VideoWidth
@@ -82,12 +82,12 @@ public class VideoMedia extends AbstractMedia {
 		this.videoFrameRate = videoFrameRate;
 	}
 
-	public double getVideoLenght() {
-		return videoLenght;
+	public double getVideoLength() {
+		return videoLength;
 	}
 
-	public void setVideoLenght(double videoLenght) {
-		this.videoLenght = videoLenght;
+	public void setVideoLenght(double videoLength) {
+		this.videoLength = videoLength;
 	}
 
 	public int getVideoHeight() {
@@ -173,16 +173,16 @@ public class VideoMedia extends AbstractMedia {
 		 out.println( "videoCodec: " + getVideoCodecName() );
 		 out.println( "videoCodecID: " + getVideoCodecID() );
 		 out.println( "videoFrameRate: " + getVideoFrameRate() );
-		 out.println( "videoLength : " + getVideoLenght() );
-		 out.println( "videoHeight : " + getVideoHeight() );
-		 out.println( "videoWidth : " + getVideoWidth() );
+		 out.println( "videoLength: " + getVideoLength() );
+		 out.println( "videoHeight: " + getVideoHeight() );
+		 out.println( "videoWidth: " + getVideoWidth() );
 		 
 		 out.println( "Audio fields: ");
-		 out.println( "audioCodec : " + getAudioCodecName() );
+		 out.println( "audioCodec: " + getAudioCodecName() );
 		 out.println( "audioCodecID: " + getAudioCodecID() );
-		 out.println( "audioChannels : " + getAudioNumChannels() );
-		 out.println( "audioSampleRate : " + getAudioSampleRate() );
-		 out.println( "audioBitRate : " + getAudioBitRate() );
+		 out.println( "audioChannels: " + getAudioNumChannels() );
+		 out.println( "audioSampleRate: " + getAudioSampleRate() );
+		 out.println( "audioBitRate: " + getAudioBitRate() );
 		 
 		return data.getBuffer();
 	}
@@ -193,6 +193,10 @@ public class VideoMedia extends AbstractMedia {
 	 */
 	@Override
 	public void deserializeObject(String data) throws IOException {
+		
+		System.out.println("--------------------------------------------------");
+		System.out.println("-----DESERIALIZE VIDEO----------------------------");
+		System.out.println("--------------------------------------------------");
 		super.deserializeObject(data);
 
 		StringReader sr = new StringReader(data);
@@ -204,6 +208,9 @@ public class VideoMedia extends AbstractMedia {
 			// ***************************************************************
 			// Fill in your code here!
 			// ***************************************************************
+			
+		 	System.out.println(line);
+			
 			if ( line.startsWith( "videoCodec: " ) ) {
         		setVideoCodecName(line.substring("videoCodec: ".length()));
         	} else
@@ -214,7 +221,7 @@ public class VideoMedia extends AbstractMedia {
             	setVideoFrameRate(line.substring("videoFrameRate: ".length()));
             }else
             if ( line.startsWith( "videoLength: " ) ) {
-            	setVideoLenght(Double.parseDouble(line.substring("videoLentghL: ".length())));
+            	setVideoLenght(Double.parseDouble(line.substring("videoLength: ".length())));
             } else
             if ( line.startsWith( "videoHeight: " ) ) {
                 setVideoHeight(Integer.parseInt(line.substring( "videoHeight: ".length() )));

@@ -182,7 +182,7 @@
                 if ( medium instanceof VideoMedia ) {
                     VideoMedia video = (VideoMedia) medium;
 
-                    int micro = (int) (video.getVideoLenght() * 1000000);
+                    int micro = (int) (video.getVideoLength() * 1000000);
                     int mili = micro / 1000;             //Duration in microsec wird umgerechnet
                     int min = (mili / 1000) / 60; 
                     int sec = (mili / 1000) % 60;

@@ -232,9 +232,22 @@ public class AudioMetadataGenerator {
 				media.setGenre((String) entry.getValue());
 		}
 
+		
+		 String dateiname = null;
+	        dateiname = input.getName();					//Dateiname auslesen
+	        String dateiendung = "";
+	        int i = dateiname.lastIndexOf('.');				//String wird ab dem "." ausgelesen
+	        if (i > 0) {
+	            dateiendung = dateiname.substring(i+1);
+	        }
+	        dateiendung = dateiendung.toLowerCase();		//Umwandlung in lowercase (kein "BMP" etc.)
+	        
+	        media.addTag(dateiendung);
 		// add a "audio" tag
 		media.addTag("audio");
 
+	
+		
 		// close the audio and write the md file.
 		in.close();
 		IOUtil.writeFile(media.serializeObject(), outputFile);

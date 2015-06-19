@@ -204,6 +204,17 @@ public class VideoMetadataGenerator {
 	          "Nicht kompatibles Pixeltyp im Videostream gefunden: " + filepath);
 	    }
 
+	    String dateiname = null;
+        dateiname = input.getName();					//Dateiname auslesen
+        String dateiendung = "";
+        int i = dateiname.lastIndexOf('.');				//String wird ab dem "." ausgelesen
+        if (i > 0) {
+            dateiendung = dateiname.substring(i+1);
+        }
+        dateiendung = dateiendung.toLowerCase();		//Umwandlung in lowercase (kein "BMP" etc.)
+        
+        media.addTag(dateiendung);
+	    
 		// set video and audio stream metadata 
 	      //Video
 	      media.setVideoCodecName(videoCoder.getCodec().getLongName());
