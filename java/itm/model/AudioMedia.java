@@ -178,19 +178,7 @@ public class AudioMedia extends AbstractMedia {
 		// ***************************************************************
 
 		out.println("encoding: " + getEncoding());
-		
-        int mili = (int) ((Long) getDuration() / 1000);				//Duration in microsec wird umgerechnet
-        int min = (mili / 1000) / 60;
-        int sec = (mili / 1000) % 60;
-        
-        String secString = Integer.toString(sec);					//Sekunden in String konvertiert
-        if (sec < 10) {												
-        	StringBuilder sb = new StringBuilder(secString);		
-        	sb.insert(0, "0");										//bei einstelligen Werten wird 0 am Anfang hinzugefuegt
-        	secString = sb.toString();
-        }     
-		out.println("duration: " + min + ":" + secString);
-		
+		out.println("duration: " + getDuration());	
 		out.println("author: " + getAuthor());
 		out.println("title: " + getTitle());
 		out.println("date: " + getDate());
